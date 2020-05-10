@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+{% block content %}
+
+
+<div class='container-fluid'>
+    <h2>Blog list</h2>
+    {% for blog in blogs %}
+        <p>{{ blog.title }} by {{ blog.author.display_name }}</p>
+    {% endfor %}
+</div>
+
+
+{% endblock %}

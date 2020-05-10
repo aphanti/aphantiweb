@@ -14,8 +14,27 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls), 
+    path('ckeditor/', include('ckeditor_uploader.urls')),    
+    path('', include('home.urls')), 
+    path('blog/', include('blog.urls')), 
+    path('subscribe/', include('subscribe.urls')), 
+]
+
+# Use static() to add url mapping to serve static files during development (only)
+from django.conf import settings
+from django.conf.urls.static import static
+
+if settings.DEBUG:
+    # static files (images, css, javascript, etc.)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+#Add Django site authentication urls (for login, logout, password management)
+urlpatterns += [ 
+    path('accounts/', include('django.contrib.auth.urls')),    
+    path('accounts/', include('accounts.urls')),
 ]

@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<style>
+    .card {
+        width:150px; 
+        height:auto; 
+        display: inline-flex; 
+        margin: 10px 20px;
+    }
+
+    .card-img-top {
+        width:100%;
+
+    }
+
+    .card-body {
+        padding: 5px 0;
+    }
+
+    .card-title {
+        margin: 0px;
+    }
+
+    .card-text {
+        margin: 0px;
+    }
+
+</style>
+
+<div class='container-fluid'>
+
+    <h3>There are {{ num }} active authors on AphantI, want to <a href="{% url 'signup' %}">john us</a>?</h3>
+    <br>
+
+    {% for author in authors %}
+    <div class="card">
+        <a href="/author/{{ author.id }}">    
+            <img class="card-img-top" src="{{ author.avatar.url }}" alt="Card image" >
+        </a>
+        <div class="card-body text-center">
+            <a href="/author/{{ author.id }}">
+                <h5 class="card-title" >{{ author.display_name }}</h5>
+            </a>
+            <p class="card-text" >Has {{ author.get_blog_count }} posts, {{ author.get_follower_count }} followers.</p>
+        </div>
+    </div>
+    
+    {% endfor %}
+
+
+</div>
+    
+
+<script>
+    $(document).ready(function () {
+        $('#navbar_aboutus').addClass('active');
+    });
+</script>
+
+{% endblock %}

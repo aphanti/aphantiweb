@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<style>
+    .card {
+        width:150px; 
+        height:auto; 
+        display: inline-flex; 
+        margin: 10px 20px;
+    }
+
+    .card-img-top {
+        width:100%;
+
+    }
+
+    .card-body {
+        padding: 5px 0;
+    }
+
+    .card-title {
+        margin: 0px;
+    }
+
+    .card-text {
+        margin: 0px;
+    }
+
+    #post_list_table > tbody > tr > td {
+        padding: 5px 10px; 
+    }
+
+</style>
+
+<div class='row container-fluid'>
+
+    <div class="col-sm-4">
+        <img src="{{ author.avatar.url }}" width=100% />
+    </div>
+    <div class="col-sm-8">
+        <h1>{{ author.display_name }}</h1>
+        <br>
+
+        <h5 style="margin-bottom: 10px; border-bottom: 1px solid #ccc;">About me:</h5>
+        <p>{{ author.bio }}</p>
+        <br>
+
+        <h5 style="margin-bottom: 10px; border-bottom: 1px solid #ccc;">Published blogs:</h5>
+        <table id="post_list_table">
+        {% for blog in author.get_myposts %}
+            <tr>
+                <td><a href="/blog/{{blog.id}}/">{{ blog.title }}</a></td>
+                <td>Published at {{ blog.publish_time | date:'Y-m-d' }}</td>
+            </tr>
+        {% endfor %}
+        </table>
+        <br>
+
+        <h5 style="margin-bottom: 10px; border-bottom: 1px solid #ccc;">Followers:</h5>
+        <table id="post_list_table">
+        {% for follower in author.get_myfollowers %}
+            <tr>
+                <td><a href="/author/{{ follower.id }}/">{{ follower.display_name }}</a></td>
+            </tr>
+        {% endfor %}
+        </table>
+        <br>
+
+    </div>
+
+</div>
+    
+
+<script>
+    $(document).ready(function () {
+        $('#navbar_aboutus').addClass('active');
+    });
+</script>
+
+{% endblock %}

@@ -1,0 +1,13 @@
+{% autoescape off %}
+Dear AphantI user,
+
+Please click the link below to verify your account:
+
+http://{{ domain }}{% url 'verify' uidb64=uid token=token %}
+
+We are excited to share knowledge in STEM with you!
+
+Best regards,
+AphantI
+
+{% endautoescape %}

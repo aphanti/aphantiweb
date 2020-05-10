@@ -1,0 +1,107 @@
+{% extends "account_base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block mydrafts %}
+
+<style>
+    #mydraft_table {
+        width: auto;
+        margin-top: 20px;
+    }
+
+    #mydraft_table > tbody > tr > td {
+        padding: 5px 10px;
+    }
+
+</style>
+
+
+
+    <a class="btn btn-success" href="/blog/create">Create A New Post</a>
+
+    {% if num %}
+        <table id="mydraft_table">
+            <tbody>
+            {% for blog in blogs %}
+                <tr>
+                    <td><a href="/blog/{{blog.id}}">{{ blog.title }}</a></td>
+                    <td>last updated at {{ blog.update_time | date:'Y-m-d' }}</td>
+                    <td><a class="btn btn-primary" href="/blog/{{blog.id}}/update">Edit</a></td>
+                    <td><button value="{{blog.title}}" id="deleteblog_{{blog.id}}" class="btn btn-danger delete-button" data-toggle="modal" data-target="#delete-blog-modal">Delete</button></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="pagination">
+            <span class="step-links">
+                {% if blogs.has_previous %}
+                    <a href="?page=1">&laquo; <button>first</button></a>
+                    <a href="?page={{ blogs.previous_page_number }}"><button>previous</button></a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ blogs.number }} of {{ blogs.paginator.num_pages }}.
+                </span>
+
+                {% if blogs.has_next %}
+                    <a href="?page={{ blogs.next_page_number }}"><button>next</button></a>
+                    <a href="?page={{ blogs.paginator.num_pages }}"><button>last</button> &raquo;</a>
+                {% endif %}
+            </span>
+        </div>    
+    {% else %}
+        <h5 style="margin-top: 20px;">You have no draft.</h5>    
+    {% endif %}
+
+
+    {% if not user.is_verified %}
+        <h5>You cannot publish blogs becuase your account is not verified.</h5> 
+        <button class="btn btn-primary" href="#" data-toggle="modal" data-target="#send-verification-modal"><strong>Verify My Account</strong></button>
+    {% endif %}
+
+<!-- delete blog Modal -->
+<div class="modal fade" id="delete-blog-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" >Deletion Confirmation</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        <form  method="POST">
+            {% csrf_token %}
+
+            <div class="modal-body">
+                <p>Are you sure to delete this post? </p>
+                <p><strong id="delete_blog_title"></strong></p>
+                <input id="delete_blog_id" type="text" name="delete_blog_id" class="form-control" required hidden>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" >Cancel</button>
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </div>
+        </form>
+
+        </div>
+    </div>
+</div>  
+
+<script>
+
+    $('#tab_mydrafts').addClass('active');
+    $('#mydrafts').addClass('show active');
+
+    $('.delete-button').click(function() {
+        var blog_id = $(this).attr('id').split("_")[1];
+        var blog_title = $(this).attr('value');
+        $('#delete_blog_title').text(blog_title);
+        $('#delete_blog_id').attr('value', blog_id);
+    });
+
+</script>
+
+{% endblock %}

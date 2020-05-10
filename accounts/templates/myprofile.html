@@ -1,0 +1,321 @@
+{% extends "account_base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block myprofile %}
+
+<style>
+    #summary {
+        display: flex;
+        align-items: center;
+        margin-bottom: 40px;
+    }
+
+    #avatar {
+        float: left;
+        display: flex;
+        align-items: center;
+        position: relative !important;
+        width: 120px !important;
+        height: 120px !important;
+    }
+    #avatar-img {
+        border-bottom-left-radius: 50%;
+        border-bottom-right-radius: 50%;
+        border-top-left-radius: 50%;
+        border-top-right-radius: 50%;
+        object-fit: cover;
+        width: 120px !important;
+        height: 120px !important;
+    }
+
+
+    #details_table {
+        width: auto;
+    }
+
+    #details_table > tbody > tr > td {
+        padding: 5px 20px;
+    }
+
+</style>
+
+    <div id="summary">
+        <div id="avatar">
+            <img id="avatar-img" src="{{ user.avatar.url }}"/>
+            <div id="change-avatar-button" style="display: none;">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#edit-avatar-modal" title='Change your profile picture' style='padding-top:4px;height:30px;width:70px;font-size: 14px; background-color: darkorange; border:0px;'>
+                        Change
+                </button>
+            </div>
+        </div>
+
+        <div class="container">
+
+            <h3><strong>{{ user.display_name }}</strong></h3> 
+            <p>{{ user.email }}</p>
+
+            <p>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#edit-profile-modal" style='padding-top:4px;height:30px;width:100px;font-size: 14px; background-color: darkorange; border:0px;'>
+                        Edit profile
+                </button>
+
+                <a class="btn btn-primary" href="{% url 'password_change' %}" role="button" style='padding-top:4px;height:30px;width:150px;font-size: 14px; background-color: darkorange; border:0px;'>Change password</a>
+            </p>
+        </div>
+    </div>
+
+    <h4 style="width:100%; border-bottom:1px solid #ddd; margin-bottom: 15px;padding-bottom: 15px;">Account details</h4>
+
+    <table id='details_table'>
+        <tbody>
+            <tr>
+                <td>Account ID</td>
+                <td>{{ user.email }}</td>
+            </tr>
+            <tr>
+                <td>Display name</td>
+                <td>{{ user.display_name }}</td>
+            </tr>
+            <tr>
+                <td>Full name</td>
+                <td>{{ user.first_name }} {{ user.last_name }}</td>
+            </tr>
+            <tr>
+                <td>Subscribed</td>
+                <td>
+                    {% if user.is_subscribe %}
+                        <strong style="color:green;">Yes, thank you! </strong>
+                        <small><a href="#" data-toggle="modal" data-target="#unsubscribe-modal">Unsubscribe?</a></small>
+                    {% else %}
+                        <strong style="color:red;">No. </strong>
+                        <small><a href="#" data-toggle="modal" data-target="#subscribe-modal" >Subscribe?</a></small>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td>Account verified</td>
+                <td>
+                    {% if user.is_verified %}
+                        <strong style="color:green;">Yes, your account is verified!</strong>
+                    {% else %}
+                        <strong style="color:red;">No. </strong>
+                        <small><a href="#" data-toggle="modal" data-target="#send-verification-modal" >Verify your account?</a></small>
+                    {% endif %}
+                </td>
+            </tr>
+            </tbody>
+    </table>
+
+    <h4 style="width:100%; border-bottom:1px solid #ddd; margin-bottom: 15px;padding-bottom: 15px; margin-top: 40px;">Statistics</h4>
+
+    <div class="container-fluid">
+        <p>You have published <a href="{% url 'myposts' %}"><strong>{{ user.get_blog_count }}</strong></a> blogs.</p>
+        <p>You have <a href="{% url 'mydrafts' %}"><strong>{{ user.get_draft_count }}</strong></a> drafts in editing.</p>
+        <p>You have posted <a href="{% url 'mycomments' %}"><strong>{{ user.get_comment_count }}</strong></a> comments.</p>
+        <p>You have <a href="{% url 'myfollowers' %}"><strong>{{ user.get_follower_count }}</strong></a> followers.</p>
+        <p>You are being followed by <a href="{% url 'myfollowings' %}"><strong>{{ user.get_following_count }}</strong></a> people.</p>
+
+    </div>
+
+
+    <!-- Subscription Confirmed modal -->
+    <div class="modal fade" id="subscribe-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" >Subscription Confirmed</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <form action="{% url 'subscribe' %}" method='POST'>
+                {% csrf_token %}
+
+                <div class="modal-body">
+                    <p>Thank you for subscribing! Please check your email to get updated newsletters and notifications from AphantI.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">OK, got it!</button>
+                </div>
+            </form>
+
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Unsubscription Confirmation Modal -->
+    <div class="modal fade" id="unsubscribe-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" >Unsubscription Confirmation</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <form action="{% url 'unsubscribe' %}" method='POST'>
+                {% csrf_token %}
+
+                <div class="modal-body">
+                    <p>Thank you for your subscription time! You are always welcome to <a data-dismiss="modal" href="#">subscribe again to AphantI</a> updates.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Continue subscription</button>
+                    <button type="submit" class="btn btn-secondary">Unsubscribe</button>
+                </div>
+            </form>
+
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Verify account Modal -->
+    <div class="modal fade" id="send-verification-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" >Verify your account</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <form action="{% url 'verify_account' %}" method="POST">
+                {% csrf_token %}
+
+                <div class="modal-body">
+                    <p>A verfication link will be sent to you. Please check your email to verify your account.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" >Cancel</button>
+                    <button type="submit" class="btn btn-primary">Verify My Account</button>
+                </div>
+            </form>
+
+            </div>
+        </div>
+    </div>    
+
+
+    <!-- Change avatar Modal -->
+    <div class="modal fade" id="edit-avatar-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" >Change your picture</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <form action="{% url 'change_avatar' %}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="modal-body">
+                    <img src="{{ user.avatar.url }}" alt="my picture" width=100% style='margin-bottom: 20px;'>
+
+                        <div class="input-group mb-3">
+                            <div class="custom-file">
+                                <input type="file" name="avatar" class="custom-file-input" id="input_avatar" accept="image/*" required>
+                                <label class="custom-file-label" for="input_avatar">Choose a picture</label>
+                            </div>
+                        </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit profile Modal -->
+    <div class="modal fade" id="edit-profile-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" >Edit your profile</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <form action="{% url 'update_profile' %}" method="POST">
+                    {% csrf_token %}
+
+                    <div class="modal-body">
+                        <p>Account ID: <input class="form-control" name="email" type="text" placeholder="{{ user.email }}" readonly style="width:auto; display:inline-flex;"></p>
+
+                            <div class="row">
+                                <div class="form-group col-md-12">
+                                    <p>Display name: <input type="text" name="display_name" class="form-control" placeholder="Display name (required)" value="{{ user.display_name }}" required style="width:auto; display:inline-flex;"></p>
+                                    <div class="invalid-feedback">
+                                        Please input your display name in public
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    First name:
+                                    <input type="text" name="first_name" class="form-control" placeholder="First name (optional)" value="{{ user.first_name }}" >
+                                </div>
+                                <div class="form-group col-md-6">
+                                    Last name:
+                                    <input type="text" name="last_name" class="form-control" placeholder="Last name (optional)" value="{{ user.last_name }}" >
+                                </div>
+                            </div>
+
+                            <div class="row">
+                            <div class="form-group col-md-12">
+                                Bio:
+                                <textarea type="text" name="bio" class="form-control" placeholder="About yourself (optional)">{{ user.bio }}</textarea>
+                            </div>
+                            </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>      
+
+<script>
+
+    $('#avatar').hover( 
+        function() {
+        $('#change-avatar-button').attr('style', 'display:inline-block; position: absolute; left:50%;  transform: translate(-50%, 0%);');
+        }, 
+
+        function() {
+        $('#change-avatar-button').attr('style', 'display: none;');
+        }
+    );    
+
+    $('#input_avatar').on('change', function(){
+        //get the file name
+        var fileName = $(this)[0].files[0].name;
+        //replace the "Choose a file" label
+        $(this).next('.custom-file-label').html(fileName);
+    });
+
+    $('#tab_myprofile').addClass('active');
+    $('#myprofile').addClass('show active');
+
+
+</script>
+    
+
+{% endblock %}

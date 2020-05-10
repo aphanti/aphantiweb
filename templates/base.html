@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head> 
+    
+    {% load static %}
+    
+    <link rel="shotcut icon" href="/static/aphanti_logo.png" type="image/png" sizes="16x16" />
+
+    <title>Aphanti</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Font -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+    <!-- D3 -->
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+
+
+    <!-- multile select -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+    
+    
+    <style>
+
+    .navbar {
+        min-height: 100px; 
+        margin: 0px;
+        padding-top: 20px; 
+        padding-bottom: 5px;
+        padding-left: 10%;
+        padding-right: 10%;
+        background-color: #fff !important;
+        -webkit-box-shadow: 0 4px 6px -6px #222;
+        -moz-box-shadow: 0 4px 6px -6px #222;
+        box-shadow: 0 4px 6px -6px #222;
+    }
+
+    .navbar-brand {
+        margin: 0px;
+        padding: 0px;
+    }
+
+    .navbar-light .nav-item .nav-link {
+        color: #000;
+        font: 400 15px Lato, sans-serif;
+    }
+
+    .navbar-light .nav-item.active .nav-link,
+    .navbar-light .nav-item .nav-link:active,
+    .navbar-light .nav-item .nav-link:focus,
+    .navbar-light .nav-item:hover .nav-link {
+        color: #66f !important;
+    }
+
+    #navbar_list {
+        margin-left: 30px;
+    }
+
+    #navbar_list li {
+        display: inline-block;
+        padding: 0 5px;
+    }
+
+    #navbar_list li ~ li {
+        border-left: 1px solid #aaa;
+    }
+
+    #content_block_id {
+        margin-top: 20px;
+        padding: 0 10%;
+    }
+
+    #footer_id {
+        background-image: url("{% static 'footer_bg_repeat.png' %}");
+        background-repeat: repeat;
+        background-size: auto 100%;
+        margin: 0px;
+        margin-top: 20px;
+        padding: 50px 10%;
+        width: 100%;
+    }
+
+    #user_avatar { 
+        width: 30px;
+        height: 30px;
+        display: inline-flex;
+    }
+
+    #user_avatar_img { 
+        width: 30px;
+        height: 30px;
+        background-color: #66f;
+        object-fit: cover;
+        border-bottom-left-radius: 50%;
+        border-bottom-right-radius: 50%;
+        border-top-left-radius: 50%;
+        border-top-right-radius: 50%;
+    }
+
+
+    @media screen and (max-width: 992px) {
+        .navbar {
+            width: 100% !important;
+            min-height: 50px !important; 
+            margin: 0px !important;
+            padding: 0px !important; 
+            background-color: #fff !important;
+            border-bottom: solid 2px #d94;
+            position: fixed;
+            z-index: 9999;
+            top: 0;
+        } 
+        .navbar-brand > img {
+            height: 30px !important;
+            margin-left: 5px !important;
+        }
+        .navbar-toggler {
+            margin-right: 5px !important;
+        }
+        .input-group {
+            width: 100% !important;
+        }
+
+        .col-md-4 {
+            text-align: center;
+        }
+
+        #content_block_id {
+            margin-top: 70px;
+            padding: 0 10px;
+        }
+    }
+
+
+    </style>
+
+</head>
+
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <a class="navbar-brand" href="/">
+            <img src="{% static 'aphanti_logo.png' %}" style='margin:0px;height:50px;width:auto;'></img>
+        </a>
+        <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbar_toggler_id">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+      
+        <div class="collapse navbar-collapse" id="navbar_toggler_id">
+            <ul class="navbar-nav mr-auto" id="navbar_list">
+                <li class="nav-item" id="navbar_author">
+                    <a class="nav-link" href="/author">Author</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/blog">Blog</a>
+                </li>
+            </ul>
+            <div class="input-group mb-3" style="width: 240px; margin-top: 15px; margin-right: 15px;">
+                <input id="search_input_id" type="text" class="form-control" placeholder="Search" style="border-color: #ff9933;">
+                <div class="input-group-append">
+                    <button id="search_button_id" class="btn btn-success" type="submit" style="background-color: #ff9933; border-color: #ff9933;"><i class="fa fa-search" style="color: #fff;"></i></button>
+                </div>
+            </div>
+            <ul class="navbar-nav">
+                {% if not user.is_authenticated %} 
+                    <li class="nav-item" style="display: flex; align-items: center;">
+                        <a class="nav-link" href="{% url 'login' %}">                        
+                            <button class="btn btn-primary">Log In</button>
+                        </a>
+                    </li>
+                    <li class="nav-item" style="display: flex; align-items: center;">
+                        <a class="nav-link" href="{% url 'signup' %}">                        
+                            <button class="btn btn-success">Sign Up</button>
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="nav-item" style="padding: 0 5px; display: flex; align-items: center;">
+                        <a class="nav-link" href="/accounts/">                        
+                            <i class='fa fa-user-circle' style='font-size:28px;color:#66f;'></i>
+                        </a>
+                    </li>
+                    <li class="nav-item" style="padding: 0 5px; display: flex; align-items: center;">
+                        <a class="nav-link" href="{% url 'logout' %}">                        
+                            <i class='fa fa-sign-out' style='font-size:28px;color:#66f;'></i>
+                        </a>
+                    </li>
+                {% endif %}
+
+            </ul>
+            
+        </div>
+      </nav>
+
+    <div id="content_block_id" class='row'>
+        {% block content %}{% endblock %}
+    </div>
+    
+
+    <div id="footer_id" class="row">
+        <div class='col-md-4' style="padding: 10px 5%; background-color: #fff;">
+            <br>
+            <h4>AphantI</h4>
+            <p style="margin:5px 0;">
+                <i class="fa fa-facebook" style="font-size:20px; margin: 0 5px"></i>
+                <i class="fa fa-twitter" style="font-size:20px; margin: 0 5px"></i>
+                <i class="fa fa-instagram" style="font-size:20px; margin: 0 5px"></i>
+                <i class="fa fa-pinterest-p" style="font-size:20px; margin: 0 5px"></i>
+            </p>
+        </div>
+
+        <div class='col-md-4' style="padding: 10px 5%; background-color: #fff; display: flex; align-items: center;">
+            <div class='container-fluid' style="padding: 0;">
+                <p style="margin:5px 0;"><a href='/author'>Authors</a></p>
+                <p style="margin:5px 0;"><a href='/blog'>Blogs</a></p>
+                <p style="margin:5px 0;"><a href='/#'>FAQs</a></p>
+                <p style="margin:5px 0;"><a href='/accounts/'>My Account</a></p>
+            </div>
+        </div>
+        <div class='col-md-4' style="padding: 10px 5%; background-color: #fff; display: flex; align-items: center;">
+            <div class='container-fluid' style="padding: 0;">
+                <h5>Get the lastest posts</h5>
+                <form action="{% url 'add-to-sublist' %}" method='POST'>
+                    {% csrf_token %}
+                    <p style="margin:5px 0;">
+                        <input type="email" name='email' class="form-control" placeholder="Enter email" id="email_id" required>
+                    </p>
+                    <p style="margin:5px 0;">
+                        <button type="submit" class="btn btn-primary" style="width:100%;">Subscribe Now</button>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // Get the input field
+        var search_input = document.getElementById("search_input_id");
+
+        // Execute a function when the user releases a key on the keyboard
+        search_input.addEventListener("keyup", function(event) {
+            // Number 13 is the "Enter" key on the keyboard
+            if (event.keyCode === 13) {
+                // Cancel the default action, if needed
+                event.preventDefault();
+                // Trigger the button element with a click
+                document.getElementById("search_button_id").click();
+                //alert(search_input.value);
+            }
+        }); 
+    </script>
+
+</body>
+
+</html>
+
+

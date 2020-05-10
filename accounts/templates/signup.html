@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+{% block content %}
+
+
+<div class="container-fluid col-lg-5 col-md-6 col-sm-8 col-xs-12 shadow-lg p-3 mb-5 bg-white rounded text-center" >
+
+    <h4>Start with your free account today.</h4><br>
+
+    {% if form.email.errors %}
+        <div class="alert alert-danger" role="alert">
+            {{ form.email.errors.as_text }} <a href="/accounts/password_reset/">Forgot password?</a>
+        </div>
+    {% endif %}
+
+    <form action="{% url 'signup' %}" method="post" class="form-signup" style='margin-bottom:20px;'>
+        {% csrf_token %}
+    
+        {% for field in form %}
+            <div class="form-group">
+            {% if field.errors %}
+                {% for error in field.errors %}
+                    <div class="invalid-feedback">{{ error }}</div>
+                {% endfor %}
+            {% endif %}
+
+            {% if field.name == 'email' %}
+                {% render_field field type="email" class="form-control" placeholder=field.label %}
+            {% endif %}
+
+            {% if field.name == 'password' %} 
+                {% render_field field type="password" class="form-control" placeholder=field.label %}
+            {% endif %}
+        
+            </div>
+        {% endfor %}
+        
+        <input type="hidden" name="next" value="{{ next }}" />
+
+        <button class="btn btn-primary" type="submit" value="signup" style="width:60%;">Sign up for free</button>
+
+
+    </form>
+
+
+    <p>Already have an account? <strong><a href="/accounts/login/">Log in</a></strong></p>
+
+
+</div>
+
+{% endblock %}

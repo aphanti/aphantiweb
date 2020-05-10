@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="container-fluid col-lg-6 col-md-8 col-sm-9 col-xs-12 shadow-lg p-3 mb-5 bg-white rounded text-center">
+    <br>
+    <p><strong>{{ email }}</strong>, thank you for subscribing to AphantI! Start writting blogs? <a href="{% url 'signup' %}">Sign Up</a></p>
+
+</div>
+
+{% endblock %}

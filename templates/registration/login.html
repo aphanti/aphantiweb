@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+{% block content %}
+
+
+<div class="container-fluid col-lg-4 col-md-6 col-sm-8 col-xs-12 shadow-lg p-3 mb-5 bg-white rounded text-center">
+    {% if next %}
+        <form type='hidden' action="/accounts/login/?next={{next}}" method="post" >
+    {% else %}
+        <form type='hidden' action="/accounts/login/" method="post" >
+    {% endif %}
+
+
+    <h3><img src="{% static 'aphanti_logo.png' %}" width=200px /></h3><br>
+
+    {% if form.errors %}
+        <div class="alert alert-danger" role="alert">
+            Invalid email or password.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+    {% endif %}
+
+    <form action="{% url 'login' %}" method="post" class="form-signin" style='margin-bottom:20px;'>
+        {% csrf_token %}
+    
+        {% for field in form.visible_fields %}
+            <div class="form-group">
+            {% if field.errors %}
+                {% for error in field.errors %}
+                    <div class="invalid-feedback">{{ error }}</div>
+                {% endfor %}
+            {% endif %}
+
+            {% if field.name != 'password' %} 
+                {% render_field field type="email" class="form-control" placeholder=field.label %}
+            {% else %}
+                {% render_field field type="password" class="form-control" placeholder=field.label %}
+            {% endif %}
+        
+            {% if field.help_text %}
+                <small class="form-text text-muted">{{ field.help_text }}</small>
+            {% endif %}
+            </div>
+        {% endfor %}
+        
+        <input type="hidden" name="next" value="{{ next }}" />
+
+        <button class="btn btn-primary" type="submit" value="login" style="width:100%;">Log in</button>
+    </form>
+
+    <br>
+    <p><strong><a href="/accounts/password_reset/">Forgot password?</a></strong></p>
+
+    <p>Don't have an account? <strong><a href="/accounts/signup">Sign up</a></strong></p>
+
+</div>
+
+{% endblock %}

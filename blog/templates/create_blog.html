@@ -1,0 +1,98 @@
+
+{% extends "base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
+
+{% block content %}
+
+<script type="text/javascript" src="{% static "ckeditor/ckeditor-init.js" %}"></script>
+<script type="text/javascript" src="{% static "ckeditor/ckeditor/ckeditor.js" %}"></script>
+
+
+<style>
+    
+    .django-ckeditor-widget { 
+        width: 100%; 
+    } 
+
+    @media screen and (max-width: 992px) {
+        .cke_maximized {
+            z-index: 10000 !important;
+        }
+    }
+
+</style>
+
+
+<form  method="POST" style="padding: 0 20px; width:100%;">
+    {% csrf_token %}
+
+
+    <!-- title -->
+    {% if form.title.errors %}
+        <div class="alert alert-danger" role="alert">
+            {{ form.title.errors.as_text }}
+        </div>
+    {% endif %}
+    <div class="form-group">
+        Title:
+        {% render_field form.title type="text" class="form-control" placeholder="Input the title of your new post" %}
+    </div>
+
+
+    <!-- Category -->
+    {% if form.category.errors %}
+        <div class="alert alert-danger" role="alert">
+            {{ form.category.errors.as_text }}
+        </div>
+    {% endif %}
+    <div class="form-group">
+        Category:
+        {% render_field form.category type="select" class="form-control" style="width:auto;" %}
+    </div>
+
+    
+    <!-- Tag -->
+    {% if form.tag.errors %}
+        <div class="alert alert-danger" role="alert">
+            {{ form.tag.errors.as_text }}
+        </div>
+    {% endif %}
+    <div class="form-group">
+        Tags:
+        {% render_field form.tag  class="selectpicker form-control" data-live-search="true" style="width:100%;" %}
+    </div>
+
+
+    <!-- summary -->
+    {% if form.summary.errors %}
+        <div class="alert alert-danger" role="alert">
+            {{ form.summary.errors.as_text }}
+        </div>
+    {% endif %}
+    <div class="form-group">
+        Summary:
+        {% render_field form.summary type="textarea" class="form-control" placeholder="A short summary of your new post" style="width:100%; height:100px;" %}
+    </div>
+
+
+    <!-- Body -->
+    {% if form.body.errors %}
+        <div class="alert alert-danger" role="alert">
+            {{ form.boday.errors.as_text }}
+        </div>
+    {% endif %}
+    <p>Body:</p>
+    <div id="blog_body" class="form-group" style="width:100%;">
+        {% render_field form.body class="form-control" %}
+    </div>
+
+
+    <button class="btn btn-primary" type="submit" name="save_to_draft">Save as a draft</button>
+    <button class="btn btn-success" type="submit" name="save_and_publish">Save and publish</button>
+</form>
+
+
+
+{% endblock %}

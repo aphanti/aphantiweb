@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+import json 
+
+web_info = json.load(open('/opt/aphanti/web_info.json', 'r'))
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,13 +24,36 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '6k_i&k7smb1q^p%s^s+m&nmdm=71w*+tjax)$v)6t)=@%zv0(e'
+SECRET_KEY = web_info['APHANTI_SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+if web_info['APHANTI_ENV'] == 'dev':
+    DEBUG = True
+else:
+    DEBUG = False 
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_SSL_REDIRECT = True
+    X_FRAME_OPTIONS = 'DENY'    
 
-ALLOWED_HOSTS = []
 
+ALLOWED_HOSTS = ['*', '142.93.196.25', 'localhost', '127.0.0.1', 'aphanti.com', 'www.aphanti.com']
+
+AUTH_USER_MODEL = 'accounts.WebUser'
+
+#-------------------------------------------------
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = web_info['EMAIL_HOST_USER']
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+SERVER_EMAIL = EMAIL_HOST_USER
+EMAIL_HOST_PASSWORD = web_info['EMAIL_HOST_PASSWORD']
+EMAIL_PORT = 587
+#-------------------------------------------------
 
 # Application definition
 
@@ -36,7 +63,14 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
+    'django.contrib.staticfiles', 
+    'home', 
+    'accounts', 
+    'blog', 
+    'subscribe', 
+    'widget_tweaks', 
+    'ckeditor', 
+    'ckeditor_uploader', 
 ]
 
 MIDDLEWARE = [
@@ -54,7 +88,9 @@ ROOT_URLCONF = 'aphantiweb.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [ 
+            os.path.join(BASE_DIR, 'templates'), 
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -75,8 +111,12 @@ WSGI_APPLICATION = 'aphantiweb.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': web_info['APHANTI_MYSQL_DBNAME'],
+        'USER': web_info['APHANTI_MYSQL_USER'],
+        'PASSWORD': web_info['APHANTI_MYSQL_PASSWORD'],
+        'HOST': 'localhost',
+        'PORT': 3306,
     }
 }
 
@@ -105,7 +145,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/New_York'
 
 USE_I18N = True
 
@@ -115,6 +155,115 @@ USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.2/howto/static-files/
-
+# https://docs.djangoproject.com/en/2.1/howto/static-files/
+# The absolute path to the directory where collectstatic will collect static files for deployment.
+# The URL to use when referring to static files (where they will be served from)
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
+MEDIA_URL = '/media/'
+
+
+# Static file serving.
+# http://whitenoise.evans.io/en/stable/django.html#django-middleware
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
+
+####################################
+    ##  CKEDITOR CONFIGURATION ##
+####################################
+
+CKEDITOR_JQUERY_URL = 'https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js'
+
+CKEDITOR_UPLOAD_PATH = '/'
+CKEDITOR_IMAGE_BACKEND = "pillow"
+
+CKEDITOR_CONFIGS = {
+    'default': {
+        'skin': 'moono',
+        #'skin': 'office2013',
+        'toolbar_Basic': [
+            [ 'Source', '-', 'Bold', 'Italic']
+        ],
+        'toolbar_YourCustomToolbarConfig': [
+            {'name': 'document', 'items': [
+                #'Source', '-', 
+                'Save', 'NewPage',
+                #'Preview', 
+                'Print', '-', 'Templates']},
+            {'name': 'clipboard', 'items': ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo']},
+            {'name': 'editing', 'items': ['Find', 'Replace', '-', 'SelectAll']},
+            #{'name': 'forms',
+            # 'items': [#'Form', 'Checkbox', 'Radio', 'TextField', 'Textarea', 'Select', 'Button', 
+            #            'ImageButton',
+            #            #'HiddenField', 
+            #            ]},
+            {'name': 'insert',
+             'items': ['Link', 'Unlink', '-', 'Image',
+                 #'Flash', 
+                 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar', 'PageBreak',
+                 #'Iframe', 
+                 '-', 'CodeSnippet', 'Mathjax', 
+                 ]},
+            {'name': 'yourcustomtools', 'items': [
+                # put the name of your editor.ui.addButton here
+                'Preview',
+                'Maximize',
+            ]},
+            '/',
+            {'name': 'basicstyles',
+             'items': ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript',
+                 #'-', 'RemoveFormat'
+                 ]},
+            {'name': 'paragraph',
+             'items': ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote',
+                        #'CreateDiv', 
+                        '-',
+                       'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock',
+                       #'-', 'BidiLtr', 'BidiRtl','Language', 
+                       ]},
+             #{'name': 'links', 'items': ['Link', 'Unlink', 
+             #    #'Anchor', 
+             #   ]},
+            {'name': 'styles', 'items': [
+                #'Styles', 
+                'Format', 'Font', 'FontSize']},
+            {'name': 'colors', 'items': ['TextColor', 'BGColor']},
+            #{'name': 'tools', 'items': ['Maximize', 
+            #    #'ShowBlocks', 
+            #    ]},
+            #{'name': 'about', 'items': ['About']},
+            #'/',  # put this to force next toolbar on new line
+        ],
+        'toolbar': 'YourCustomToolbarConfig',  # put selected toolbar config here
+        # 'toolbarGroups': [{ 'name': 'document', 'groups': [ 'mode', 'document', 'doctools' ] }],
+        'height': 200,
+        'width': "100%",
+        # 'filebrowserWindowHeight': 725,
+        # 'filebrowserWindowWidth': 940,
+        # 'toolbarCanCollapse': True,
+        'mathJaxLib': '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML',
+        'tabSpaces': 4,
+        'extraPlugins': ','.join([
+            'uploadimage', # the upload image feature
+            # your extra plugins here
+            'div',
+            'autolink',
+            'autoembed',
+            'embedsemantic',
+            'autogrow',
+            #'devtools',
+            'widget',
+            'lineutils',
+            'clipboard',
+            'dialog',
+            'dialogui',
+            'elementspath', 
+            'codesnippet', 
+            'mathjax', 
+        ]),
+    }
+}

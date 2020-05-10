@@ -1,0 +1,60 @@
+{% extends "account_base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block mycomments %}
+
+<style>
+    #mycomment_table {
+        width: auto;
+        margin-top: 20px;
+    }
+
+    #mycomment_table > tbody > tr > td {
+        padding: 5px 10px;
+    }
+
+</style>
+
+    {% if num %}
+        <table id="mycomment_table">
+            <tbody>
+            {% for comment in comments %}
+                <tr>
+                    <td>Comment on "<a href="/blog/{{blog.id}}">{{ comment.blog.title }}</a>"</td>
+                    <td>created at {{ comment.create_time | date:'Y-m-d' }}</td>
+                    <td><button class="btn btn-danger" href="#">Delete</button></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="pagination">
+            <span class="step-links">
+                {% if comments.has_previous %}
+                    <a href="?page=1">&laquo; <button>first</button></a>
+                    <a href="?page={{ comments.previous_page_number }}"><button>previous</button></a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ comments.number }} of {{ comments.paginator.num_pages }}.
+                </span>
+
+                {% if comments.has_next %}
+                    <a href="?page={{ comments.next_page_number }}"><button>next</button></a>
+                    <a href="?page={{ comments.paginator.num_pages }}"><button>last</button> &raquo;</a>
+                {% endif %}
+            </span>
+        </div>    
+    {% else %}
+        <h5>You have no comment.</h5>
+    {% endif %}
+
+<script>
+
+    $('#tab_mycomments').addClass('active');
+    $('#mycomments').addClass('show active');
+
+</script>
+
+{% endblock %}

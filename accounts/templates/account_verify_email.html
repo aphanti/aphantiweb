@@ -1,0 +1,15 @@
+{% autoescape off %}
+Dear AphantI's user,
+
+Thank you for visiting www.aphanti.com!
+
+Your account ({{ user.email }}) has been successfully created. Please click the link below to verify your account:
+
+http://{{ domain }}{% url 'verify' uidb64=uid token=token %}
+
+We are excited to provide you the best products and services to make each step of your life more meaningful!
+
+Best regards,
+AphantI
+
+{% endautoescape %}
