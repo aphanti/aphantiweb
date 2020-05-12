@@ -15,9 +15,12 @@ sys.path.append( proj_dir )
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'aphantiweb.settings')
 django.setup()  
 
+from aphantiweb.settings import SITE_ID
 from accounts.models import WebUser
 from blog.models import Blog, Comment, Category, Tag, Follow
 from subscribe.models import SubscribeList
+from django.contrib.sites.models import Site
+
 
 
 resource_names = []
@@ -229,6 +232,7 @@ def get_random_sentence(length_range):
         return ''
 
 
+
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
@@ -241,6 +245,7 @@ if __name__ == "__main__":
     get_resource(config)
     upload_default(config)
     #db = get_database_connection(config)
+    
     user_ids = generate_users(config)
     category_ids = generate_category(config)
     tag_ids = generate_tag(config)

@@ -34,7 +34,7 @@
             <tbody>
             {% for comment in comments %}
                 <tr>
-                    <td>Comment on "<a href="/blog/{{comment.blog.id}}">{{ comment.blog.title }}</a>"</td>
+                    <td><a href="/blog/{{comment.blog.id}}#comment_{{comment.id}}">Comment on "{{ comment.blog.title }}"</a></td>
                     <td>created at {{ comment.create_time | date:'Y-m-d' }}</td>
                     <td><button class="btn btn-danger" href="#">Delete</button></td>
                 </tr>

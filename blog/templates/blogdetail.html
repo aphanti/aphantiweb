@@ -60,6 +60,7 @@
 
     #blog {
         padding: 0 10%;
+        margin-bottom: 20px;
     }
 
     #blog_title {
@@ -154,11 +155,24 @@
 
 </div>
 
-<h4 style="margin: 20px 0; padding: 5px 0; border-bottom: 1px solid #aaa; width:100%;">{{ blog.get_comment_count }} comments:</h4>
+<div id="add_comment" style="width: 100%; padding: 10px 10%;">
+    {% if user.is_authenticated %}
+        <form method="POST">
+            {% csrf_token %}
 
-<div class="container-fluid">
+            <textarea class="form-control" name="comment" placeholder="Enter your comment here" required></textarea>
+            <button class="btn btn-primary float-right" type="submit" style="margin: 10px 0;">Publish Comment</button>
+        </form>
+    {% else %}
+        <a class="btn btn-primary" href="/accounts/login/?next={{request.path}}">Login to comment</a>
+    {% endif %}
+</div>
+
+<h4 style="margin: 20px 20px; padding: 5px 0; border-bottom: 1px solid #aaa; width:100%; ">{{ blog.get_comment_count }} comments:</h4>
+
+<div class="container-fluid" id="comment_list">
     {% for comment in blog.get_comments %}
-    <div class="container comment">
+    <div class="container comment" id="comment_{{comment.id}}">
         <div class="comment-avatar">
             <a href="/author/{{ comment.author.id }}">
             <img class="comment-avatar-img" src="{{ comment.author.avatar.url }}"/>

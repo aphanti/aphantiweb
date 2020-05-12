@@ -30,6 +30,11 @@ def blogdetailview(request, pk):
             'markdown.extensions.codehilite',
         ]
     )
+    if request.method=='POST':
+        comment = Comment(author=request.user, content=request.POST['comment'], 
+            blog=blog)
+        comment.save()
+
     return render(request, 'blogdetail.html', {'blog': blog, 'comments':blog.comments.all().order_by('-create_time'), 'num_comment':len(blog.comments.all())})
 
 

@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load socialaccount %}
 {% load widget_tweaks %}
 {% block content %}
 
@@ -12,7 +13,9 @@
     {% endif %}
 
 
-    <h3><img src="{% static 'aphanti_logo.png' %}" width=200px /></h3><br>
+    <h3><img src="{% static 'aphanti_logo.png' %}" width=200px /></h3>
+
+    <p><a href="{% provider_login_url 'google' %}">Login with Google</a></p>
 
     {% if form.errors %}
         <div class="alert alert-danger" role="alert">

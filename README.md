@@ -12,6 +12,7 @@
     - MySQLdb
     - django
     - whitenoise
+    - django-allauth
     - django-ckeditor
     - django-widget-tweaks
 
@@ -47,9 +48,24 @@
     ```
     - where APHANTI_ENV should be "dev" on your development computer, and "prod" on your deployment server
 
+
 + Create simulated data in MySQL
+    - cd test; python3 generate_data.py -c config.json
 
 
 + Build and run
     - sh run.sh
 
+
++ Enable google account signin
+    - Tutorial: https://medium.com/@whizzoe/in-5-mins-set-up-google-login-to-sign-up-users-on-django-e71d5c38f5d5
+    - Go to the admin@aphanti.com google developer console -> APIs credentials to get client ID and client secret (we also save them in web_info.json)
+    - run makemigrations, migrate, and runserver on 127.0.0.1:8000
+    - add site: -> Sites -> domain name: 127.0.0.1:8000
+    - add client ID and secret key: -> Social applications:
+        + Provider: Google
+        + Name: Google API
+        + Client id: xxx
+        + Secrect key: xxx
+        + Key: [secret key]
+        + Sites: choose the domain (e.g. 127.0.0.1:8000)

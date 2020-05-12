@@ -70,7 +70,7 @@ class Comment(models.Model):
     blog = models.ForeignKey('Blog', on_delete=models.CASCADE, null=True, related_name='comments')
     author = models.ForeignKey('accounts.WebUser', on_delete=models.CASCADE, null=False)
     content = models.TextField(max_length=4000, blank=True)
-    create_time = models.DateTimeField(blank=True)
+    create_time = models.DateTimeField(default=datetime.now())
 
     def __str__(self):
         return "[" + self.create_time.strftime("%m/%d/%Y, %H:%M:%S")+ "] " + self.author.display_name + "'s comment on " + self.blog.title
