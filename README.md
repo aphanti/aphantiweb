@@ -9,7 +9,8 @@
 
 + Python libraries
     - mysql-connector-python: https://dev.mysql.com/doc/connector-python/en/connector-python-installation-binary.html
-    - django: 
+    - MySQLdb
+    - django
     - whitenoise
     - django-ckeditor
     - django-widget-tweaks

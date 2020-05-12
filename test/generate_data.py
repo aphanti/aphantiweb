@@ -35,6 +35,14 @@ def get_resource(config):
     return 
 
 
+def upload_default(config):
+    os.system('mkdir -p '+proj_dir+'/uploads/user_avatar')
+    os.system('cp -f resource/user_avatar_default.jpg '+proj_dir+'/uploads/user_avatar/default.jpg')
+    os.system('mkdir -p '+proj_dir+'/uploads/blog_category')
+    os.system('cp -f resource/category_bg_default.jpg '+proj_dir+'/uploads/blog_category/default.jpg')
+    os.system('mkdir -p '+proj_dir+'/uploads/blog_body_image')
+
+
 def get_database_connection(config):
     print('get database connected')
     web_info = json.load(open(config['web_info'], 'r'))
@@ -231,6 +239,7 @@ if __name__ == "__main__":
 
 
     get_resource(config)
+    upload_default(config)
     #db = get_database_connection(config)
     user_ids = generate_users(config)
     category_ids = generate_category(config)
