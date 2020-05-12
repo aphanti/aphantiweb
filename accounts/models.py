@@ -55,10 +55,28 @@ class WebUser(AbstractUser):
         return Follow.objects.filter(befollowed__id=self.id).distinct().count()
 
     def get_myfollowers(self):
-        return Follow.objects.filter(befollowed__id=self.id)
+        fs = Follow.objects.filter(befollowed__id=self.id).distinct()
+        people = []
+        for f in fs:
+            people.append( f.follower )
+        return people
+
     
     def get_following_count(self):
         return Follow.objects.filter(follower__id=self.id).distinct().count()
 
-    def get_myfollwings(self):
-        return Follow.objects.filter(follower__id=self.id)
+    def get_myfollowings(self):
+        fs = Follow.objects.filter(follower__id=self.id)
+        people = []
+        for f in fs:
+            people.append( f.befollowed )
+        return people
+
+    def get_myfollowing_ids(self):
+        fs = Follow.objects.filter(follower__id=self.id)
+        ids = []
+        for f in fs:
+            ids.append( f.befollowed.id )
+        return ids
+
+

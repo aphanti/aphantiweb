@@ -17,15 +17,15 @@ class BlogAdmin(admin.ModelAdmin):
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
-    list_display = ('name', )
-    fields = ('name', )
-    list_filter = ('name', )
+    list_display = ('name', 'bg_color')
+    fields = ('name', 'bg_color')
+    #list_filter = ('name', 'bg_color')
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('name', )
-    fields = ('name', )
-    list_filter = ('name', )
+    list_display = ('name', 'bg_image')
+    fields = ('name', 'bg_image')
+    #list_filter = ('name', 'bg_image')
 
 
 @admin.register(Comment)
@@ -37,7 +37,7 @@ class CommentAdmin(admin.ModelAdmin):
 
 @admin.register(Follow)
 class FollowAdmin(admin.ModelAdmin):
-    list_display = ('follower', 'befollowed')
-    fields = ['follower', 'befollowed']
-    list_filter = ['follower', 'befollowed']
+    list_display = ('follower', 'befollowed', 'create_time')
+    fields = ['follower', 'befollowed', 'create_time']
+    #list_filter = ['follower', 'befollowed']
 

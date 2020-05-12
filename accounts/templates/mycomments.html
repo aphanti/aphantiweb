@@ -14,6 +14,19 @@
         padding: 5px 10px;
     }
 
+    .page-button {
+        padding: 2px 10px;
+        border: 1px solid #fa8;
+        margin: 5px;
+    }
+    
+    .page-button-end {
+        padding: 2px 10px;
+        border: 1px solid #fa8;
+        margin: 5px;
+        background-color: #ddd;
+    }    
+
 </style>
 
     {% if num %}
@@ -21,19 +34,20 @@
             <tbody>
             {% for comment in comments %}
                 <tr>
-                    <td>Comment on "<a href="/blog/{{blog.id}}">{{ comment.blog.title }}</a>"</td>
+                    <td>Comment on "<a href="/blog/{{comment.blog.id}}">{{ comment.blog.title }}</a>"</td>
                     <td>created at {{ comment.create_time | date:'Y-m-d' }}</td>
                     <td><button class="btn btn-danger" href="#">Delete</button></td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
+         
 
-        <div class="pagination">
-            <span class="step-links">
+        <div class="pagination" style="margin-top: 10px;">
+            <span class="step-links" style="display: inline-flex; align-items: center;">
                 {% if comments.has_previous %}
-                    <a href="?page=1">&laquo; <button>first</button></a>
-                    <a href="?page={{ comments.previous_page_number }}"><button>previous</button></a>
+                    <a href="?page=1">&laquo; <button class="btn btn-light page-button-end">first</button></a>
+                    <a href="?page={{ comments.previous_page_number }}"><button class="btn btn-light page-button">previous</button></a>
                 {% endif %}
 
                 <span class="current">
@@ -41,11 +55,11 @@
                 </span>
 
                 {% if comments.has_next %}
-                    <a href="?page={{ comments.next_page_number }}"><button>next</button></a>
-                    <a href="?page={{ comments.paginator.num_pages }}"><button>last</button> &raquo;</a>
+                    <a href="?page={{ comments.next_page_number }}"><button class="btn btn-light page-button">next</button></a>
+                    <a href="?page={{ comments.paginator.num_pages }}"><button class="btn btn-light page-button-end">last</button> &raquo;</a>
                 {% endif %}
             </span>
-        </div>    
+        </div>           
     {% else %}
         <h5>You have no comment.</h5>
     {% endif %}

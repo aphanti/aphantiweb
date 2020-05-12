@@ -9,12 +9,15 @@ from datetime import datetime
 from .forms import BlogForm
 
 
+blog_per_page = 10
+
+
 def bloglistview(request):
     blog_list = Blog.objects.filter(is_draft=False).order_by('-publish_time')
-    paginator = Paginator(blog_list, 7)
+    paginator = Paginator(blog_list,  blog_per_page)
     page = request.GET.get('page')
     blogs = paginator.get_page(page)
-    return render(request, 'bloglist.html', {'blogs': blogs})
+    return render(request, 'bloglist.html', {'blogs': blogs, 'num': len(blog_list)})
 
 
 def blogdetailview(request, pk):
@@ -64,8 +67,7 @@ def update_blog_view(request, pk):
             if request.method == "POST":
                 form = BlogForm(request.POST, instance=instance)
                 if form.is_valid():
-                    blog = form.save(commit = False)
-                    blog.author = request.user
+                    blog = form.save(commit = True)
                     if 'save_to_draft' in request.POST:
                         blog.update_time = datetime.now()
                         blog.is_draft = True

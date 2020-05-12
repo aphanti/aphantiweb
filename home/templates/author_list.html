@@ -31,9 +31,6 @@
 
 <div class='container-fluid'>
 
-    <h3>There are {{ num }} active authors on AphantI, want to <a href="{% url 'signup' %}">john us</a>?</h3>
-    <br>
-
     {% for author in authors %}
     <div class="card">
         <a href="/author/{{ author.id }}">    

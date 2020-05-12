@@ -31,6 +31,30 @@
         padding: 5px 10px; 
     }
 
+    .follow-button {
+        border: 1px solid #f97;
+        margin-left: 10px;
+        padding: 2px 10px;
+    }
+
+    .author-img {
+        border-bottom-left-radius: 50%;
+        border-bottom-right-radius: 50%;
+        border-top-left-radius: 50%;
+        border-top-right-radius: 50%;
+        object-fit: cover;
+        width: 70px !important;
+        height: 70px !important;
+    }
+
+    .author {
+        width: auto;
+        height: auto;
+        display: inline-block;
+        margin: 5px 5px;
+    }
+
+
 </style>
 
 <div class='row container-fluid'>
@@ -39,7 +63,17 @@
         <img src="{{ author.avatar.url }}" width=100% />
     </div>
     <div class="col-sm-8">
-        <h1>{{ author.display_name }}</h1>
+        <h1>{{ author.display_name }} 
+            {% if user.is_authenticated %}
+                {% if author.id in user.get_myfollowing_ids %}
+                    <a class='btn btn-light follow-button' style="background-color:bisque;">Unfollow</a>
+                {% else %}
+                    <a class='btn btn-light follow-button'>Follow</a>
+                {% endif %}
+            {% else %}
+                <a href="/accounts/login/?next={{request.path}}" class='btn btn-light follow-button'>Follow</a>
+            {% endif %}
+        </h1>
         <br>
 
         <h5 style="margin-bottom: 10px; border-bottom: 1px solid #ccc;">About me:</h5>
@@ -58,13 +92,13 @@
         <br>
 
         <h5 style="margin-bottom: 10px; border-bottom: 1px solid #ccc;">Followers:</h5>
-        <table id="post_list_table">
-        {% for follower in author.get_myfollowers %}
-            <tr>
-                <td><a href="/author/{{ follower.id }}/">{{ follower.display_name }}</a></td>
-            </tr>
+        {% for person in author.get_myfollowers %}
+            <div class="author text-center">
+                <a href="/author/{{ person.id }}">
+                <img class="author-img" src="{{ person.avatar.url }}"/>
+                </a>
+            </div>
         {% endfor %}
-        </table>
         <br>
 
     </div>
@@ -76,6 +110,8 @@
     $(document).ready(function () {
         $('#navbar_aboutus').addClass('active');
     });
+
+    
 </script>
 
 {% endblock %}

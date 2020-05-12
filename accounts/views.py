@@ -17,7 +17,6 @@ from blog.models import Blog, Comment, Follow
 
 post_per_page = 6
 comment_per_page = 10
-people_per_page = 80
 
 
 def signup(request):
@@ -190,10 +189,7 @@ def myfollowers_view(request):
         if request.method == 'POST':
             pass
             
-        clist = request.user.get_myfollowers()
-        paginator = Paginator(clist, people_per_page)
-        page = request.GET.get('page')
-        people = paginator.get_page(page)        
+        people = request.user.get_myfollowers()
         return render(request, 'myfollowers.html', {'people': people, 'num': len(people)})
     else:
         return redirect('login')    
@@ -204,10 +200,7 @@ def myfollowings_view(request):
         if request.method == 'POST':
             pass
             
-        clist = request.user.get_myfollowers()
-        paginator = Paginator(clist, people_per_page)
-        page = request.GET.get('page')
-        people = paginator.get_page(page)        
+        people = request.user.get_myfollowings()
         return render(request, 'myfollowings.html', {'people': people, 'num': len(people)})
     else:
         return redirect('login')    

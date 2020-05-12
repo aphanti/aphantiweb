@@ -6,47 +6,36 @@
 
 <style>
 
-    #avatar-img {
+    .author-img {
         border-bottom-left-radius: 50%;
         border-bottom-right-radius: 50%;
         border-top-left-radius: 50%;
         border-top-right-radius: 50%;
         object-fit: cover;
         width: 80px !important;
-        width: 80px !important;
+        height: 80px !important;
     }
+
+    .author {
+        width: 80px;
+        height: auto;
+        display: inline-block;
+        margin: 5px 5px;
+    }
+
 
 </style>
 
     {% if num %}
         {% for person in people %}
-            <div class="col-sm-1 container-fluid text-center">
-                <div class="card" style="width: 100%;">
-                    <img class="avatar-img" src="{{ person.avatar.url }}" class="card-img-top" />
-                    <div class="card-body">
-                        <h5 class="card-title">{{ person.display_name }}</h5>
-                    </div>
-                </div>
+            <div class="author text-center">
+                <a href="/author/{{ person.id }}">
+                <img class="author-img" src="{{ person.avatar.url }}"/>
+                <p>{{ person.display_name }}</p>
+                </a>
             </div>
         {% endfor %}
 
-        <div class="pagination">
-            <span class="step-links">
-                {% if comments.has_previous %}
-                    <a href="?page=1">&laquo; <button>first</button></a>
-                    <a href="?page={{ comments.previous_page_number }}"><button>previous</button></a>
-                {% endif %}
-
-                <span class="current">
-                    Page {{ comments.number }} of {{ comments.paginator.num_pages }}.
-                </span>
-
-                {% if comments.has_next %}
-                    <a href="?page={{ comments.next_page_number }}"><button>next</button></a>
-                    <a href="?page={{ comments.paginator.num_pages }}"><button>last</button> &raquo;</a>
-                {% endif %}
-            </span>
-        </div>    
     {% else %}
         <h5>You have no follower.</h5>
     {% endif %}

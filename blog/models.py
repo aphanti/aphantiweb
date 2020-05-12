@@ -28,9 +28,17 @@ class Blog(models.Model):
     def get_absolute_url(self):
         return reverse('blog:blog-detail', args=[str(self.id)])
 
+    def get_comment_count(self):
+        return Comment.objects.filter(blog__id=self.id).distinct().count()
+
+    def get_comments(self):
+        return Comment.objects.filter(blog__id=self.id).distinct().order_by("-create_time")
+
+
 
 class Tag(models.Model):
     name = models.CharField(max_length=128, blank=False, unique=True)
+    bg_color = models.CharField(max_length=7, blank=True, default="#ffffff")
     def __str__(self):
         return self.name
 
@@ -44,6 +52,9 @@ class Tag(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=128, blank=False, unique=True)
+    bg_image = models.ImageField(upload_to="blog_category/", blank=True, 
+        default='blog_category/default.jpg', verbose_name='Category background image')
+
     def __str__(self):
         return self.name
 
@@ -73,10 +84,11 @@ class Follow(models.Model):
         related_name='befollowed')
     follower = models.ForeignKey('accounts.WebUser', on_delete=models.CASCADE, blank=True, 
         related_name='follower')
+    create_time = models.DateTimeField(blank=True)
 
     def __str__(self):
         return self.follower.display_name + '->' + self.befollowed.display_name
 
     class Meta:
-        ordering = ['follower']
+        ordering = ['create_time']
 

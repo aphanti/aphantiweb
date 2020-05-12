@@ -4,11 +4,62 @@
 {% block content %}
 
 
+<style>
+    .page-button {
+        padding: 2px 10px;
+        border: 1px solid #fa8;
+        margin: 5px;
+    }
+    
+    .page-button-end {
+        padding: 2px 10px;
+        border: 1px solid #fa8;
+        margin: 5px;
+        background-color: #ddd;
+    }    
+
+    .blog_list {
+        border-bottom: 1px solid #ddd;
+        padding: 10px 0;
+    }
+
+    .blog_title {
+        margin: 10px 0;
+    }
+
+</style>
+
+
 <div class='container-fluid'>
-    <h2>Blog list</h2>
+
     {% for blog in blogs %}
-        <p>{{ blog.title }} by {{ blog.author.display_name }}</p>
+        <div class="container-fluid blog_list">
+            <h4 class="blog_title"><a href="/blog/{{blog.id}}" style="color:#268;">{{ blog.title }}</a></h4>
+            <p>By: 
+                <a href="/author/{{blog.author.id}}">{{ blog.author.display_name }}</a>  
+                <i class='fa fa-clock-o' style="margin-left: 10px;"></i> {{ blog.publish_time | date:'Y-m-d' }}
+                <i class='fa fa-folder-open' style="margin-left: 10px;"></i> <a href="#"> {{ blog.category.name }} </a>
+            </p>
+        </div>
     {% endfor %}
+
+    <div class="pagination" style="margin-top: 10px;">
+        <span class="step-links" style="display: inline-flex; align-items: center;">
+            {% if blogs.has_previous %}
+                <a href="?page=1">&laquo; <button class="btn btn-light page-button-end">first</button></a>
+                <a href="?page={{ blogs.previous_page_number }}"><button class="btn btn-light page-button">previous</button></a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ blogs.number }} of {{ blogs.paginator.num_pages }}.
+            </span>
+
+            {% if blogs.has_next %}
+                <a href="?page={{ blogs.next_page_number }}"><button class="btn btn-light page-button">next</button></a>
+                <a href="?page={{ blogs.paginator.num_pages }}"><button class="btn btn-light page-button-end">last</button> &raquo;</a>
+            {% endif %}
+        </span>
+    </div>   
 </div>
 
 

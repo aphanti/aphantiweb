@@ -12,8 +12,3 @@ class BlogForm(forms.ModelForm):
         fields = ('title', 'summary', 'category', 'tag', 'body')
 
 
-class DeleteNewForm(forms.ModelForm):
-    class Meta:
-        model = Blog
-        fields = []
-

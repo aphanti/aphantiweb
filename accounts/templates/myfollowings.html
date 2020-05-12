@@ -1,0 +1,50 @@
+{% extends "account_base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block myfollowings %}
+
+<style>
+
+    .author-img {
+        border-bottom-left-radius: 50%;
+        border-bottom-right-radius: 50%;
+        border-top-left-radius: 50%;
+        border-top-right-radius: 50%;
+        object-fit: cover;
+        width: 80px !important;
+        height: 80px !important;
+    }
+
+    .author {
+        width: 80px;
+        height: auto;
+        display: inline-block;
+        margin: 5px 5px;
+    }
+
+
+</style>
+
+    {% if num %}
+        {% for person in people %}
+            <div class="author text-center">
+                <a href="/author/{{ person.id }}">
+                <img class="author-img" src="{{ person.avatar.url }}"/>
+                <p>{{ person.display_name }}</p>
+                </a>
+            </div>
+        {% endfor %}
+
+    {% else %}
+        <h5>You have no follower.</h5>
+    {% endif %}
+
+<script>
+
+    $('#tab_myfollowings').addClass('active');
+    $('#myfollowings').addClass('show active');
+
+</script>
+
+{% endblock %}
