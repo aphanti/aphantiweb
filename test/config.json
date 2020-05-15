@@ -1,5 +1,4 @@
 {
-    "web_info": "/opt/aphanti/web_info.json", 
     "superuser_email": "admin@aphanti.com", 
     "user_password": "1234", 
     "user_has_avatar_prob": 0.7, 

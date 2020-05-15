@@ -9,13 +9,14 @@ from datetime import datetime, timedelta
 import django 
 from django.core.files import File
 from django.utils import timezone
+import pytz
 
 proj_dir = os.path.dirname(os.path.abspath(__file__)) + '/../'
 sys.path.append( proj_dir )
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'aphantiweb.settings')
 django.setup()  
 
-from aphantiweb.settings import SITE_ID
+from aphantiweb.settings import WEB_INFO_JSON
 from accounts.models import WebUser
 from blog.models import Blog, Comment, Category, Tag, Follow
 from subscribe.models import SubscribeList
@@ -42,13 +43,13 @@ def upload_default(config):
     os.system('mkdir -p '+proj_dir+'/uploads/user_avatar')
     os.system('cp -f resource/user_avatar_default.jpg '+proj_dir+'/uploads/user_avatar/default.jpg')
     os.system('mkdir -p '+proj_dir+'/uploads/blog_category')
-    os.system('cp -f resource/category_bg_default.jpg '+proj_dir+'/uploads/blog_category/default.jpg')
+    os.system('cp -f resource/category_bg_default.png '+proj_dir+'/uploads/blog_category/default.png')
     os.system('mkdir -p '+proj_dir+'/uploads/blog_body_image')
 
 
 def get_database_connection(config):
     print('get database connected')
-    web_info = json.load(open(config['web_info'], 'r'))
+    web_info = json.load(open(WEB_INFO_JSON, 'r'))
     user = web_info['APHANTI_MYSQL_USER']
     host = "localhost"
     passwd = web_info['APHANTI_MYSQL_PASSWORD']
@@ -132,16 +133,19 @@ def generate_tag(config):
         print('create tag:', c.name, c.bg_color)
         c.save()
         ids.append(c.id)
-
     return  ids
+
+
+def get_time_from_str(s):
+    return
 
 
 def generate_blog(config, user_ids, category_ids, tag_ids):
     print('--- delete all blogs ---')
     Blog.objects.all().delete()
 
-    time0 = datetime.strptime(config['blog_time_range'][0], "%Y-%m-%d")
-    time1 = datetime.strptime(config['blog_time_range'][1], "%Y-%m-%d")
+    time0 = datetime.strptime(config['blog_time_range'][0], "%Y-%m-%d", )
+    time1 = datetime.strptime(config['blog_time_range'][1], "%Y-%m-%d", )
     dt = time1-time0
     dsecond = 1.0*(dt.days*86400 + dt.seconds)
 
@@ -185,8 +189,8 @@ def generate_comments(config, user_ids, blog_ids):
     print('--- delete all comments ---')
     Comment.objects.all().delete()
 
-    time0 = datetime.strptime(config['blog_time_range'][0], "%Y-%m-%d")
-    time1 = datetime.strptime(config['blog_time_range'][1], "%Y-%m-%d")
+    time0 = datetime.strptime(config['blog_time_range'][0], "%Y-%m-%d", )
+    time1 = datetime.strptime(config['blog_time_range'][1], "%Y-%m-%d", )
     dt = time1-time0
     dsecond = 1.0*(dt.days*86400 + dt.seconds)
 
@@ -207,8 +211,8 @@ def generate_follow(config, user_ids):
     print('--- delete all follows ---')
     Follow.objects.all().delete()
 
-    time0 = datetime.strptime(config['blog_time_range'][0], "%Y-%m-%d")
-    time1 = datetime.strptime(config['blog_time_range'][1], "%Y-%m-%d")
+    time0 = datetime.strptime(config['blog_time_range'][0], "%Y-%m-%d", )
+    time1 = datetime.strptime(config['blog_time_range'][1], "%Y-%m-%d", )
     dt = time1-time0
     dsecond = 1.0*(dt.days*86400 + dt.seconds)
 

@@ -13,7 +13,9 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 import os
 import json 
 
-web_info = json.load(open('/opt/aphanti/web_info.json', 'r'))
+
+WEB_INFO_JSON = '/opt/aphanti/web_info.json'
+web_info = json.load(open(WEB_INFO_JSON, 'r'))
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -69,24 +71,45 @@ INSTALLED_APPS = [
     'allauth.account', # social account
     'allauth.socialaccount',  # social account
     'allauth.socialaccount.providers.google', # social account
-    'home', 
     'accounts', 
+    'home', 
     'blog', 
     'subscribe', 
     'widget_tweaks', 
     'ckeditor', 
     'ckeditor_uploader', 
+    'django_user_agents', 
+    'tracking_analyzer', 
+    #'django_user_agents', 
 ]
 
+GEOIP_PATH = web_info['GEOIP_PATH']
+
+# Cache backend is optional, but recommended to speed up user agent parsing
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '127.0.0.1:11211',
+    }
+}
+
+# Name of cache backend to cache user agents. If it not specified default
+# cache alias will be used. Set to `None` to disable caching.
+USER_AGENTS_CACHE = 'default'
+
+
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
+#MIDDLEWARE_CLASSES = [ 
+    'django.middleware.security.SecurityMiddleware', 
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware', 
+    'django_user_agents.middleware.UserAgentMiddleware',
 ]
+
 
 ROOT_URLCONF = 'aphantiweb.urls'
 
@@ -268,12 +291,13 @@ CKEDITOR_CONFIGS = {
             {'name': 'styles', 'items': [
                 #'Styles', 
                 'Format', 'Font', 'FontSize']},
-            {'name': 'colors', 'items': ['TextColor', 'BGColor']},
+            {'name': 'colors', 'items': ['TextColor', 'BGColor']}, 
             #{'name': 'tools', 'items': ['Maximize', 
             #    #'ShowBlocks', 
             #    ]},
             #{'name': 'about', 'items': ['About']},
             #'/',  # put this to force next toolbar on new line
+
         ],
         'toolbar': 'YourCustomToolbarConfig',  # put selected toolbar config here
         # 'toolbarGroups': [{ 'name': 'document', 'groups': [ 'mode', 'document', 'doctools' ] }],

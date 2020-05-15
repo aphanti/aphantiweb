@@ -7,6 +7,7 @@ from django.core.paginator import Paginator
 from django.http import HttpResponse
 from datetime import datetime
 from .forms import BlogForm
+from tracking_analyzer.models import Tracker
 
 
 blog_per_page = 10
@@ -34,6 +35,8 @@ def blogdetailview(request, pk):
         comment = Comment(author=request.user, content=request.POST['comment'], 
             blog=blog)
         comment.save()
+
+    Tracker.objects.create_from_request(request, blog)
 
     return render(request, 'blogdetail.html', {'blog': blog, 'comments':blog.comments.all().order_by('-create_time'), 'num_comment':len(blog.comments.all())})
 
