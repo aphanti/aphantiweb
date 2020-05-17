@@ -1,0 +1,63 @@
+{% extends "account_base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block mytraffic %}
+
+<style>
+    table {
+        width: auto;
+        margin-top: 20px;
+    }
+
+    table > thead > tr > td {
+        padding: 5px 10px;
+        font-weight: bold;
+    }
+
+    table > tbody > tr > td {
+        padding: 5px 10px;
+    }
+
+    table > tbody > tr > td:nth-child(1n+2) {
+        text-align: center;
+    }
+
+</style>
+
+
+    {% if num %}
+    <table>
+        <thead>
+            <tr>
+                <td>Blog title</td>
+                <td>Views</td>
+                <td>Likes</td>
+                <td>Comments</td>
+            </tr>
+        </thead>
+        <tbody>
+        {% for blog in blogs %}
+            <tr>
+                <td><a href="/blog/{{blog.id}}">{{ blog.title }}</a></td>
+                <td>{{ blog.num_visit }}</td>
+                <td>{{ blog.num_like }}</td>
+                <td>{{ blog.get_comment_count }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    {% else %}
+    <h5 style="margin-top: 20px;">You have no traffic.</h5>
+    {% endif %}
+
+
+<script>
+
+    $('#tab_mytraffic').addClass('active');
+    $('#mytraffic').addClass('show active');
+
+</script>
+
+{% endblock %}

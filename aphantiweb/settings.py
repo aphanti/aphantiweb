@@ -71,10 +71,12 @@ INSTALLED_APPS = [
     'allauth.account', # social account
     'allauth.socialaccount',  # social account
     'allauth.socialaccount.providers.google', # social account
+    'allauth.socialaccount.providers.facebook', # social account
+    'allauth.socialaccount.providers.instagram', # social account
+    'allauth.socialaccount.providers.twitter', # social account
     'accounts', 
     'home', 
     'blog', 
-    'subscribe', 
     'widget_tweaks', 
     'ckeditor', 
     'ckeditor_uploader', 
@@ -216,6 +218,11 @@ SOCIALACCOUNT_PROVIDERS = {
         ],
         'AUTH_PARAMS': {
             'access_type': 'online',
+        }, 
+        'APP': {
+            'client_id': web_info['google_app_client_id'], 
+            'secret': web_info['google_app_client_secret'], 
+            'key': web_info['google_app_client_secret'], 
         }
     }
 }

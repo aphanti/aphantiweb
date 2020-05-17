@@ -1,13 +1,17 @@
 from django.shortcuts import render, redirect, get_object_or_404
 
 # Create your views here.
-from .models import Blog, Tag, Category, Comment
+from .models import Blog, Tag, Category, Comment, Follow
 import markdown
 from django.core.paginator import Paginator
 from django.http import HttpResponse
 from datetime import datetime
 from .forms import BlogForm
 from tracking_analyzer.models import Tracker
+from django.utils import timezone
+from django.http import Http404  
+from django.http import HttpResponseRedirect
+
 
 
 blog_per_page = 10
@@ -23,22 +27,75 @@ def bloglistview(request):
 
 def blogdetailview(request, pk):
     blog = get_object_or_404(Blog, id = int(pk))
-    blog.body = markdown.markdown(
-        blog.body,
-        extensions=[
-            'markdown.extensions.extra',
-            'markdown.extensions.toc',
-            'markdown.extensions.codehilite',
-        ]
-    )
-    if request.method=='POST':
-        comment = Comment(author=request.user, content=request.POST['comment'], 
-            blog=blog)
-        comment.save()
+    if (not blog.is_draft) or (request.user.is_authenticated and (request.user.id == blog.author.id)):
+        blog.body = markdown.markdown(
+            blog.body,
+            extensions=[
+                'markdown.extensions.extra',
+                'markdown.extensions.toc',
+                'markdown.extensions.codehilite',
+            ]
+        )
 
-    Tracker.objects.create_from_request(request, blog)
+        if request.method=='POST':
+            if 'publish_comment' in request.POST:
+                comment = Comment(commenter=request.user, 
+                    content=request.POST['comment'], 
+                    blog=blog, 
+                    create_time = timezone.now() )
+                comment.save()
+            
+            if 'add_follow' in request.POST:
+                add_follow(request.user.id, blog.author.id)
+            
+            if 'delete_follow' in request.POST:
+                delete_follow(request.user.id, blog.author.id)
 
-    return render(request, 'blogdetail.html', {'blog': blog, 'comments':blog.comments.all().order_by('-create_time'), 'num_comment':len(blog.comments.all())})
+            if 'like_blog' in request.POST:
+                if 'has_liked' not in request.session:
+                    request.session['has_liked'] = [blog.id]
+                    blog.num_like += 1
+                    blog.save()
+                else:
+                    if blog.id not in request.session['has_liked']:
+                        tmp = request.session['has_liked']
+                        tmp.append(blog.id) 
+                        request.session['has_liked'] = tmp
+                        blog.num_like += 1
+                        blog.save()
+                    else:
+                        tmp = list(set(request.session['has_liked']))
+                        tmp.remove(blog.id) 
+                        request.session['has_liked'] = tmp
+                        blog.num_like -= 1
+                        blog.save()
+
+
+        if 'has_viewed' not in request.session:
+            request.session['has_viewed'] = [blog.id]
+            blog.num_visit += 1
+            blog.save()
+        else:
+            if blog.id not in request.session['has_viewed']:
+                tmp = request.session['has_viewed']
+                tmp.append(blog.id) 
+                request.session['has_viewed'] = tmp
+                blog.num_visit += 1
+                blog.save()
+
+        if ('has_liked' in request.session) and (blog.id in request.session['has_liked']):
+            liked = True        
+        else:
+            liked = False
+
+        Tracker.objects.create_from_request(request, blog)
+
+        return render(request, 'blogdetail.html', {'blog': blog, 'comments':blog.comments.all().order_by('-create_time'), 'num_comment':len(blog.comments.all()), 'liked': liked})
+    else:
+        if not request.user.is_authenticated:
+            return HttpResponseRedirect("/accounts/login/?next=/blog/"+format(pk))
+        else:
+            raise Http404
 
 
 def create_blog_view(request):
@@ -47,12 +104,12 @@ def create_blog_view(request):
             form = BlogForm(request.POST)
             if form.is_valid():
                 blog = form.save(commit=False)
-                blog.author = request.user
+                blog.author = request.user                
                 if 'save_to_draft' in request.POST:
-                    blog.update_time = datetime.now()
+                    blog.update_time = timezone.now()
                     blog.is_draft = True
                 else:
-                    blog.pub_time = datetime.now()
+                    blog.publish_time = timezone.now()
                     blog.is_draft = False
 
                 blog.save()
@@ -77,10 +134,10 @@ def update_blog_view(request, pk):
                 if form.is_valid():
                     blog = form.save(commit = True)
                     if 'save_to_draft' in request.POST:
-                        blog.update_time = datetime.now()
+                        blog.update_time = timezone.now()
                         blog.is_draft = True
                     else:
-                        blog.publish_time = datetime.now()
+                        blog.publish_time = timezone.now()
                         blog.is_draft = False
                     blog.save()
                     if blog.is_draft:
@@ -88,11 +145,22 @@ def update_blog_view(request, pk):
                     else:
                         return redirect("myposts")
 
-            return render(request, "update_blog.html", {"form": BlogForm(instance=instance)})
+            return render(request, "update_blog.html", {"form": BlogForm(instance=instance), 'is_draft':instance.is_draft})
         else:
             return redirect('blog-detail', pk=pk)
     else:
         return redirect('login')
 
 
+def add_follow(follower_id, befollowed_id):
+    follow = Follow(follower_id=follower_id, 
+        befollowed_id=befollowed_id, 
+        create_time = timezone.now())
+    follow.save()
+    return 
 
+def delete_follow(follower_id, befollowed_id):
+    follow = Follow.objects.filter(follower_id=follower_id).filter(befollowed_id=befollowed_id)
+    if follow:
+        follow.delete()
+    return 

@@ -117,6 +117,10 @@
         margin-inline-end: 40px;
     }
 
+    #like_id:hover {
+        color:#f97;
+    }
+
     @media screen and (max-width: 992px) {
         #blog {
             padding: 0 20px;
@@ -145,16 +149,27 @@
 
                 {% if user.is_authenticated %}
                     {% if blog.author.id in user.get_myfollowing_ids %}
-                        <a class='btn btn-light follow-button' style="background-color:bisque;">Unfollow</a>
+                        <form method="POST" style="display: inline-flex; margin:0;">
+                        {% csrf_token %}
+                        <button class='btn btn-light follow-button' type="submit" name="delete_follow" style="background-color:bisque;">Unfollow</button>
+                        </form>
                     {% else %}
-                        <a class='btn btn-light follow-button'>Follow</a>
+                        <form method="POST" style="display: inline-flex; margin:0;">
+                        {% csrf_token %}
+                        <button class='btn btn-light follow-button' type="submit" name="add_follow">Follow</button>
+                        </form>
                     {% endif %}
                 {% else %}
                     <a href="/accounts/login/?next={{request.path}}" class='btn btn-light follow-button'>Follow</a>
                 {% endif %}
             </p> 
             <p>
-                <i class='fa fa-clock-o'></i> {{ blog.publish_time | date:'M d, Y' }} 
+                <i class='fa fa-clock-o'></i> 
+                {% if blog.is_draft %}
+                    created at {{ blog.create_time | date:'M d, Y H:i' }}
+                {% else %}
+                    {{ blog.publish_time | date:'M d, Y H:i' }} 
+                {% endif %}
                 <i class='fa fa-folder-open' style="margin-left: 10px;"></i> <a href="#">{{blog.category.name}} </a>
             </p>
         </div>
@@ -176,42 +191,60 @@
 
 </div>
 
-<div id="add_comment" style="width: 100%; padding: 10px 10%;">
-    {% if user.is_authenticated %}
-        <form method="POST">
+{% if not blog.is_draft %}
+
+    <h4 id="blog_statistics" style="margin: 20px 20px; padding: 5px 0; border-bottom: 1px solid #aaa; width:100%; ">
+        <i class="fa fa-eye"></i> {{blog.num_visit}} views,
+        <form action="{{request.path}}#blog_statistics" method='POST' style="display: inline-block;">
             {% csrf_token %}
-
-            <textarea class="form-control" name="comment" placeholder="Enter your comment here" required></textarea>
-            <button class="btn btn-primary float-right" type="submit" style="margin: 10px 0;">Publish Comment</button>
+            <button type='submit' name='like_blog' id="like_id" style="margin-left:10px; border:0;background-color: #fff; padding:0;">
+            {% if liked %}
+                <i class="fa fa-thumbs-o-up" style="color:#f97;"></i>
+            {% else %}
+                <i class="fa fa-thumbs-o-up" ></i>
+            {% endif %}
+            </button>
         </form>
-    {% else %}
-        <a class="btn btn-primary" href="/accounts/login/?next={{request.path}}">Login to comment</a>
-    {% endif %}
-</div>
+        {{blog.num_like}} likes, 
+        <i class="fa fa-commenting-o" style="margin-left:10px;"></i> {{ blog.get_comment_count }} comments
+    </h4>
 
-<h4 style="margin: 20px 20px; padding: 5px 0; border-bottom: 1px solid #aaa; width:100%; ">{{ blog.get_comment_count }} comments:</h4>
-
-<div class="container-fluid" id="comment_list">
-    {% for comment in blog.get_comments %}
-    <div class="container comment" id="comment_{{comment.id}}">
-        <div class="comment-avatar">
-            <a href="/author/{{ comment.author.id }}">
-            <img class="comment-avatar-img" src="{{ comment.author.avatar.url }}"/>
-            </a>
-        </div>        
-        <div class="comment-content">
-            <p style="color: #555; margin: 0;">
-                <i class='fa fa-clock-o'></i> 
-                {{ comment.create_time | date:'Y-m-d' }}: 
-            </p>
-            <p>
-                {{ comment.content }}
-            </p>
-        </div>
+    <div id="add_comment" style="width: 100%; padding: 10px 10%;">
+        {% if user.is_authenticated %}
+            <form action="{{request.path}}#blog_statistics" method="POST">
+                {% csrf_token %}
+                <textarea class="form-control" name="comment" placeholder="Enter your comment here" required></textarea>
+                <button class="btn btn-primary float-right" type="submit" style="margin: 10px 0;" name="publish_comment">Publish Comment</button>
+            </form>
+        {% else %}
+            <a class="btn btn-primary" href="{% url 'login' %}?next={{request.path}}">Login to comment</a>
+        {% endif %}
     </div>
-    {% endfor %}
-</div>
 
+
+
+    <div class="container-fluid" id="comment_list">
+        {% for comment in blog.get_comments %}
+        <div class="container comment" id="comment_{{comment.id}}">
+            <div class="comment-avatar">
+                <a href="/author/{{ comment.commenter.id }}">
+                <img class="comment-avatar-img" src="{{ comment.commenter.avatar.url }}"/>
+                </a>
+            </div>        
+            <div class="comment-content">
+                <p style="color: #555; margin: 0;">
+                    <a href="/author/{{ comment.commenter.id }}">{{ comment.commenter.display_name }}</a>
+                    <i class='fa fa-clock-o'></i> 
+                    {{ comment.create_time | date:'Y-m-d H:i' }}: 
+                </p>
+                <p>
+                    {{ comment.content }}
+                </p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% endif %}
 
 <script>
     $(document).ready(function () {

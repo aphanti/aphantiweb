@@ -60,14 +60,17 @@
         "APHANTI_MYSQL_USER": "aphanti",
         "APHANTI_MYSQL_PASSWORD": "xxx",
         "EMAIL_HOST_USER": "admin@aphanti.com",
-        "EMAIL_HOST_PASSWORD": "xxx"
+        "EMAIL_HOST_PASSWORD": "xxx", 
+        "GEOIP_PATH": "xxx", 
+        "google_app_client_id": "xxx", 
+        "google_app_client_secret": "xxx"
     }
     ```
     - where APHANTI_ENV should be "dev" on your development computer, and "prod" on your deployment server
 
 
-+ Create simulated data in MySQL
-    - cd test; python3 generate_data.py -c config.json
++ Create simulated data in MySQL and run test 
+    - cd test; sh test.sh
 
 
 + Build and run
@@ -76,7 +79,7 @@
 
 + Enable google account signin
     - Tutorial: https://medium.com/@whizzoe/in-5-mins-set-up-google-login-to-sign-up-users-on-django-e71d5c38f5d5
-    - Go to the admin@aphanti.com google developer console -> APIs credentials to get client ID and client secret (we also save them in web_info.json)
+    - Go to the admin@aphanti.com google developer console -> APIs credentials to get client ID and client secret (we have also saved them in web_info.json)
     - run makemigrations, migrate, and runserver on 127.0.0.1:8000
     - add site: -> Sites -> domain name: 127.0.0.1:8000
     - add client ID and secret key: -> Social applications:

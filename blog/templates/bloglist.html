@@ -37,7 +37,7 @@
             <h4 class="blog_title"><a href="/blog/{{blog.id}}" style="color:#268;">{{ blog.title }}</a></h4>
             <p>By: 
                 <a href="/author/{{blog.author.id}}">{{ blog.author.display_name }}</a>  
-                <i class='fa fa-clock-o' style="margin-left: 10px;"></i> {{ blog.publish_time | date:'Y-m-d' }}
+                <i class='fa fa-clock-o' style="margin-left: 10px;"></i> {{ blog.publish_time | date:'Y-m-d H:i' }}
                 <i class='fa fa-folder-open' style="margin-left: 10px;"></i> <a href="#"> {{ blog.category.name }} </a>
             </p>
         </div>

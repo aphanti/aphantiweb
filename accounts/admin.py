@@ -13,13 +13,13 @@ from django.utils.safestring import mark_safe
 @admin.register(WebUser)
 class WebUserAdmin(UserAdmin):
     list_display = ('email', 'display_name', 'is_active', 'is_staff', 'is_superuser', 
-        'is_verified', 'is_subscribe', 'show_photo')
+        'is_verified', 'is_subscribe', 'is_author', 'show_photo')
     list_filter = ('is_active', 'is_staff', 'is_superuser', 
-        'is_verified', 'is_subscribe')
+        'is_verified', 'is_subscribe', 'is_author')
 
     fieldsets = ( 
         (None, {'fields': ('email', 'password')}),
-        (ugettext_lazy('Personal info'), {'fields': (('display_name', 'first_name', 'last_name'), ( 'is_verified', 'is_subscribe'), 'avatar', 'bio')}),
+        (ugettext_lazy('Personal info'), {'fields': (('display_name', 'first_name', 'last_name'), ( 'is_verified', 'is_subscribe', 'is_author'), ('setting_show_email', 'setting_show_fullname', 'setting_notify_comment', 'setting_notify_like', 'setting_notify_follow', 'setting_notify_new_blog'), 'avatar', 'bio')}),
         (ugettext_lazy('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
         (ugettext_lazy('Important dates'), {'fields': ('last_login', 'date_joined')}),
         )

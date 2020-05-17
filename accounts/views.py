@@ -6,6 +6,7 @@ from django.contrib.auth import login, authenticate
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import SignUpForm
 from .models import WebUser
+from allauth.account.models import EmailAddress
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -58,8 +59,9 @@ def verify_account(request, uidb64, token):
         user = None
     if user is not None and account_activation_token.check_token(user, token):
         user.is_verified = True
+        user.is_author = True
         user.save()
-        login(request, user)
+        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
         return render(request, 'account_verify_done.html', {'email': user.email})
     else:
         return render(request, 'account_verify_invalid.html')
@@ -173,7 +175,8 @@ def mydrafts_view(request):
 def mycomments_view(request):
     if request.user.is_authenticated:
         if request.method == 'POST':
-            pass 
+            comment = get_object_or_404(Comment, id=int(request.POST['delete_comment_id']))
+            comment.delete()
             
         clist = request.user.get_mycomments()
         paginator = Paginator(clist, comment_per_page)
@@ -204,4 +207,26 @@ def myfollowings_view(request):
         return render(request, 'myfollowings.html', {'people': people, 'num': len(people)})
     else:
         return redirect('login')    
+
+
+def mysetting_view(request):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            pass
+
+        return render(request, 'mysetting.html', {})
+    else:
+        return redirect('login')
+
+
+def mytraffic_view(request):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            pass
+
+        blogs = request.user.get_myposts().order_by('-num_visit')
+        return render(request, 'mytraffic.html', {'blogs': blogs, 'num': len(blogs)})
+    else:
+        return redirect('login')
+
 

@@ -8,6 +8,7 @@ from django.utils.translation import ugettext_lazy
 from .managers import UserManager
 
 from blog.models import Blog, Comment, Follow
+from allauth.account.models import EmailAddress
 
 
 class WebUser(AbstractUser):
@@ -22,6 +23,14 @@ class WebUser(AbstractUser):
 
     is_verified = models.BooleanField(default=False, verbose_name='is verified')
     is_subscribe = models.BooleanField(default=True, verbose_name='is subscribe')
+    is_author = models.BooleanField(default=False, verbose_name='is blog author')
+
+    setting_show_email    = models.BooleanField(default=False)
+    setting_show_fullname = models.BooleanField(default=False)
+    setting_notify_comment  = models.BooleanField(default=False)
+    setting_notify_like     = models.BooleanField(default=False)
+    setting_notify_follow   = models.BooleanField(default=False)
+    setting_notify_new_blog = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'
     #REQUIRED_FIELDS = ['email']
@@ -40,7 +49,7 @@ class WebUser(AbstractUser):
         return Blog.objects.filter(author__id=self.id).filter(is_draft=True).distinct().count()        
 
     def get_comment_count(self):
-        return Comment.objects.filter(author__id=self.id).distinct().count()
+        return Comment.objects.filter(commenter__id=self.id).distinct().count()
 
     def get_myposts(self):
         return Blog.objects.filter(author__id=self.id).exclude(is_draft=True).order_by('-publish_time')
@@ -49,7 +58,7 @@ class WebUser(AbstractUser):
         return Blog.objects.filter(author__id=self.id).filter(is_draft=True).order_by('-update_time')
 
     def get_mycomments(self):
-        return Comment.objects.filter(author__id=self.id).order_by('-create_time')
+        return Comment.objects.filter(commenter__id=self.id).order_by('-create_time')
 
     def get_follower_count(self):
         return Follow.objects.filter(befollowed__id=self.id).distinct().count()
@@ -79,4 +88,27 @@ class WebUser(AbstractUser):
             ids.append( f.befollowed.id )
         return ids
 
+    def get_total_visit_count(self):
+        total = 0
+        for blog in Blog.objects.filter(author__id=self.id).exclude(is_draft=True).distinct():
+            total += blog.num_visit
+        return total
+
+    def get_total_like_count(self):
+        total = 0
+        for blog in Blog.objects.filter(author__id=self.id).exclude(is_draft=True).distinct():
+            total += blog.num_like
+        return total
+
+    def get_total_comment_count(self):
+        total = 0
+        for blog in Blog.objects.filter(author__id=self.id).exclude(is_draft=True).distinct():
+            total += blog.get_comment_count()
+        return total
+
+    def check_social_account(self):
+        if EmailAddress.objects.get(email=self.email):
+            return True
+        else:
+            return False
 

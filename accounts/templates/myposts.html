@@ -31,7 +31,7 @@
 </style>
 
 
-{% if user.is_verified %}
+{% if user.is_verified and user.is_author %}
 
     <a class="btn btn-success" href="/blog/create">Create A New Post</a>
 
@@ -41,7 +41,7 @@
             {% for blog in blogs %}
                 <tr>
                     <td><a href="/blog/{{blog.id}}">{{ blog.title }}</a></td>
-                    <td>published at {{ blog.publish_time | date:'Y-m-d' }}</td>
+                    <td>published at {{ blog.publish_time | date:'Y-m-d H:i' }}</td>
                     <td><a class="btn btn-primary" href="/blog/{{blog.id}}/update">Edit</a></td>
                     <td><button value="{{blog.title}}" id="deleteblog_{{blog.id}}" class="btn btn-danger delete-button" data-toggle="modal" data-target="#delete-blog-modal">Delete</button></td>
                 </tr>

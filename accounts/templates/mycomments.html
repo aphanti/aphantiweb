@@ -35,8 +35,8 @@
             {% for comment in comments %}
                 <tr>
                     <td><a href="/blog/{{comment.blog.id}}#comment_{{comment.id}}">Comment on "{{ comment.blog.title }}"</a></td>
-                    <td>created at {{ comment.create_time | date:'Y-m-d' }}</td>
-                    <td><button class="btn btn-danger" href="#">Delete</button></td>
+                    <td>created at {{ comment.create_time | date:'Y-m-d H:i' }}</td>
+                    <td><button id="deletecomment_{{comment.id}}" class="btn btn-danger delete-button" data-toggle="modal" data-target="#delete-comment-modal">Delete</button></td>
                 </tr>
             {% endfor %}
             </tbody>
@@ -64,10 +64,44 @@
         <h5>You have no comment.</h5>
     {% endif %}
 
+
+<!-- delete blog Modal -->
+<div class="modal fade" id="delete-comment-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" >Deletion Confirmation</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        <form  method="POST">
+            {% csrf_token %}
+
+            <div class="modal-body">
+                <p>Are you sure to delete this comment?</p>
+                <input id="delete_comment_id" type="text" name="delete_comment_id" class="form-control" required hidden>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" >Cancel</button>
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </div>
+        </form>
+
+        </div>
+    </div>
+</div> 
+
 <script>
 
     $('#tab_mycomments').addClass('active');
     $('#mycomments').addClass('show active');
+
+    $('.delete-button').click(function() {
+        var comment_id = $(this).attr('id').split("_")[1];
+        $('#delete_comment_id').attr('value', comment_id);
+    });
 
 </script>
 

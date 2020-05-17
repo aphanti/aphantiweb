@@ -15,5 +15,6 @@ urlpatterns = [
     path('mycomments', views.mycomments_view, name='mycomments'), 
     path('myfollowers', views.myfollowers_view, name='myfollowers'), 
     path('myfollowings', views.myfollowings_view, name='myfollowings'), 
-
+    path('mytraffic', views.mytraffic_view, name='mytraffic'), 
+    path('mysetting', views.mysetting_view, name='mysetting'), 
 ]

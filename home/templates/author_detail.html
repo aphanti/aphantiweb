@@ -63,17 +63,29 @@
         <img src="{{ author.avatar.url }}" width=100% />
     </div>
     <div class="col-sm-8">
-        <h1>{{ author.display_name }} 
+        <h1 style="display: inline-flex; align-items: center; margin-bottom: 20px;">{{ author.display_name }} 
             {% if user.is_authenticated %}
                 {% if author.id in user.get_myfollowing_ids %}
-                    <a class='btn btn-light follow-button' style="background-color:bisque;">Unfollow</a>
+                    <form method='POST' style='margin:10px; display: inline-flex;'>
+                        {% csrf_token %}
+                        <button class='btn btn-light follow-button' type='submit' name='delete_follow' style="background-color:bisque;">Unfollow</button>
+                    </form>
                 {% else %}
-                    <a class='btn btn-light follow-button'>Follow</a>
+                    <form method="POST" style='margin-left: 10px; display: inline-flex;'>
+                        {% csrf_token %}
+                        <button class='btn btn-light follow-button' type="submit" name="add_follow">Follow</button>
+                    </form>
                 {% endif %}
             {% else %}
                 <a href="/accounts/login/?next={{request.path}}" class='btn btn-light follow-button'>Follow</a>
             {% endif %}
         </h1>
+        {% if author.setting_show_email %}
+            <h5>Email: {{ author.email }}</h5>
+        {% endif %}
+        {% if author.setting_show_fullname %}
+            <h5>Full name: {{ author.first_name }} {{ author.last_name }}</h5>
+        {% endif %}
         <br>
 
         <h5 style="margin-bottom: 10px; border-bottom: 1px solid #ccc;">About me:</h5>
@@ -85,7 +97,7 @@
         {% for blog in author.get_myposts %}
             <tr>
                 <td><a href="/blog/{{blog.id}}/">{{ blog.title }}</a></td>
-                <td>Published at {{ blog.publish_time | date:'Y-m-d' }}</td>
+                <td>Published at {{ blog.publish_time | date:'Y-m-d H:i' }}</td>
             </tr>
         {% endfor %}
         </table>

@@ -80,7 +80,7 @@
     <!-- Body -->
     {% if form.body.errors %}
         <div class="alert alert-danger" role="alert">
-            {{ form.boday.errors.as_text }}
+            {{ form.body.errors.as_text }}
         </div>
     {% endif %}
     <p>Body:</p>
@@ -88,8 +88,9 @@
         {% render_field form.body class="form-control" %}
     </div>
 
-
-    <button class="btn btn-primary" type="submit" name="save_to_draft">Save as a draft</button>
+    {% if is_draft %}
+        <button class="btn btn-primary" type="submit" name="save_to_draft">Save as a draft</button>
+    {% endif %}
     <button class="btn btn-success" type="submit" name="save_and_publish">Save and publish</button>
 </form>
 

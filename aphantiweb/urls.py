@@ -21,7 +21,6 @@ urlpatterns = [
     path('ckeditor/', include('ckeditor_uploader.urls')),    
     path('', include('home.urls')), 
     path('blog/', include('blog.urls')), 
-    path('subscribe/', include('subscribe.urls')), 
 ]
 
 # Use static() to add url mapping to serve static files during development (only)

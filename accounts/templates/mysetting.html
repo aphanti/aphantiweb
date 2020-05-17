@@ -1,0 +1,62 @@
+{% extends "account_base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block mysetting %}
+
+<style>
+
+
+</style>
+
+    <form class="form-check">
+        <input class="form-check-input" type="checkbox" value="" id="show_email">
+        <label class="form-check-label" for="show_email">
+            Show my email address on my public profile page
+        </label>
+    </form>
+
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="" id="show_fullname">
+        <label class="form-check-label" for="show_fullname">
+            Show my full name on my public profile page
+        </label>
+    </div>
+
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="" id="notify_comment">
+        <label class="form-check-label" for="notify_comment">
+            Notify me when people comment on my blogs
+        </label>
+    </div>
+
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="" id="notify_like">
+        <label class="form-check-label" for="notify_like">
+            Notify me when people like my blogs
+        </label>
+    </div>
+
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="" id="notify_follow">
+        <label class="form-check-label" for="notify_follow">
+            Notify me when people follow me
+        </label>
+    </div>
+
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="" id="notify_new_blog">
+        <label class="form-check-label" for="notify_new_blog">
+            Notify me when the people I follow post new blogs
+        </label>
+    </div>
+
+
+<script>
+
+    $('#tab_mysetting').addClass('active');
+    $('#mysetting').addClass('show active');
+
+</script>
+
+{% endblock %}

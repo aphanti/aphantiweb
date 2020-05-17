@@ -195,12 +195,12 @@
                 {% else %}
                     <li class="nav-item" style="padding: 0 5px; display: flex; align-items: center;">
                         <a class="nav-link" href="/accounts/">                        
-                            <i class='fa fa-user-circle' style='font-size:28px;color:#66f;'></i>
+                            <i class='fa fa-user-circle' title="My account" style='font-size:28px;color:#66f;'></i>
                         </a>
                     </li>
                     <li class="nav-item" style="padding: 0 5px; display: flex; align-items: center;">
                         <a class="nav-link" href="{% url 'logout' %}">                        
-                            <i class='fa fa-sign-out' style='font-size:28px;color:#66f;'></i>
+                            <i class='fa fa-sign-out' title="Log out" style='font-size:28px;color:#66f;'></i>
                         </a>
                     </li>
                 {% endif %}
@@ -231,8 +231,11 @@
             <div class='container-fluid' style="padding: 0;">
                 <p style="margin:5px 0;"><a href='/author'>Authors</a></p>
                 <p style="margin:5px 0;"><a href='/blog'>Blogs</a></p>
-                <p style="margin:5px 0;"><a href='/#'>FAQs</a></p>
+                <p style="margin:5px 0;"><a href='/#'>Feedbacks</a></p>
+                <p style="margin:5px 0;"><a href='/#'>Terms and Policy</a></p>
+                {% if user.is_authenticated %}
                 <p style="margin:5px 0;"><a href='/accounts/'>My Account</a></p>
+                {% endif %}
             </div>
         </div>
         <div class='col-md-4' style="padding: 10px 5%; background-color: #fff; display: flex; align-items: center;">

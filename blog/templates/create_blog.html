@@ -78,12 +78,12 @@
 
 
     <!-- Body -->
+    <p>Body:</p>
     {% if form.body.errors %}
         <div class="alert alert-danger" role="alert">
-            {{ form.boday.errors.as_text }}
+            {{ form.body.errors.as_text }}
         </div>
     {% endif %}
-    <p>Body:</p>
     <div id="blog_body" class="form-group" style="width:100%;">
         {% render_field form.body class="form-control" %}
     </div>

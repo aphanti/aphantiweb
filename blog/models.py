@@ -14,13 +14,16 @@ class Blog(models.Model):
     title = models.CharField(max_length=400)
     summary = models.TextField(max_length=4000, blank=True)
     body = RichTextUploadingField()
-    create_time = models.DateTimeField(default=datetime.now())
-    update_time = models.DateTimeField(default=datetime.now())
-    publish_time = models.DateTimeField(default=datetime.now())
+    create_time = models.DateTimeField(auto_now_add=True)
+    update_time = models.DateTimeField(blank=True, null=True)
+    publish_time = models.DateTimeField(blank=True, null=True)
     category = models.ForeignKey('Category', on_delete=models.CASCADE, \
         verbose_name="Blog category")
     tag = models.ManyToManyField('Tag', verbose_name='Blog Tag', blank=True)
     is_draft = models.BooleanField(default=True, verbose_name='Is draft')
+    num_visit = models.IntegerField(default=0)
+    num_like = models.IntegerField(default=0)
+
 
     def __str__(self):
         return self.title + ' - ' + self.author.display_name
@@ -68,15 +71,15 @@ class Category(models.Model):
 
 class Comment(models.Model):
     blog = models.ForeignKey('Blog', on_delete=models.CASCADE, null=True, related_name='comments')
-    author = models.ForeignKey('accounts.WebUser', on_delete=models.CASCADE, null=False)
+    commenter = models.ForeignKey('accounts.WebUser', on_delete=models.CASCADE, null=False)
     content = models.TextField(max_length=4000, blank=True)
-    create_time = models.DateTimeField(default=datetime.now())
+    create_time = models.DateTimeField(auto_now_add=False)
 
     def __str__(self):
-        return "[" + self.create_time.strftime("%m/%d/%Y, %H:%M:%S")+ "] " + self.author.display_name + "'s comment on " + self.blog.title
+        return "[" + self.create_time.strftime("%m/%d/%Y, %H:%M:%S")+ "] " + self.commenter.display_name + "'s comment on " + self.blog.title
 
     class Meta:
-        ordering = ['create_time']
+        ordering = ['-create_time']
 
 
 class Follow(models.Model):
@@ -84,11 +87,12 @@ class Follow(models.Model):
         related_name='befollowed')
     follower = models.ForeignKey('accounts.WebUser', on_delete=models.CASCADE, blank=True, 
         related_name='follower')
-    create_time = models.DateTimeField(blank=True)
+    create_time = models.DateTimeField(auto_now_add=False)
 
     def __str__(self):
         return self.follower.display_name + '->' + self.befollowed.display_name
 
     class Meta:
-        ordering = ['create_time']
+        ordering = ['-create_time']
+
 

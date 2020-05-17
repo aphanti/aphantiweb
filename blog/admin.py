@@ -9,10 +9,10 @@ from django.utils.safestring import mark_safe
 @admin.register(Blog)
 class BlogAdmin(admin.ModelAdmin):
     list_display = ['title', 'author', 'create_time', 'is_draft']
-    fields = ['title', ('author', 'create_time', 'update_time', 'publish_time'), 
+    fields = ['title', ('author', 'update_time', 'publish_time'), 
         'is_draft', 'category', 'tag', 'summary', 'body']
     list_filter = ( 'author', 'category', 'tag', 'is_draft' )
-    #readonly_fields = ('pub_time', )
+    readonly_fields = ('create_time', )
 
 
 @admin.register(Tag)
@@ -30,14 +30,17 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ('create_time', 'author', 'blog')
-    fields = [('create_time', 'author'), 'blog', 'content']
-    list_filter = ['author', 'blog']
+    list_display = ('create_time', 'commenter', 'blog')
+    fields = ['commenter', 'blog', 'content']
+    readonly_fields = ['create_time', ]
+    list_filter = ['commenter', 'blog']
 
 
 @admin.register(Follow)
 class FollowAdmin(admin.ModelAdmin):
-    list_display = ('follower', 'befollowed', 'create_time')
-    fields = ['follower', 'befollowed', 'create_time']
-    #list_filter = ['follower', 'befollowed']
+    list_display = ('create_time', 'follower', 'befollowed')
+    fields = ['follower', 'befollowed']
+    readonly_fields = ['create_time', ]
+    list_filter = ['follower', 'befollowed']
+
 

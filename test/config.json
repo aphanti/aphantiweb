@@ -6,6 +6,7 @@
     "random_image": "resource/random_image", 
     "words": "resource/words.txt", 
     "num_user": 22, 
+    "user_verify_prob": 0.8, 
     "bio_length_range": [0, 100], 
     "num_category": 10, 
     "num_tag": 30, 
@@ -13,11 +14,15 @@
     "num_follow": 300, 
     "blog_title_length_range": [1, 20], 
     "blog_summary_length_range": [0, 100], 
-    "blog_time_range": ["2019-01-01", "2019-12-31"], 
     "blog_tag_range": [0, 10], 
     "blog_body_paragraph_num_range": [0, 10], 
     "blog_body_paragraph_length_range": [1, 200], 
     "blog_body_has_image_prob": 0.8, 
+    "blog_maxvisit": 100, 
+    "blog_maxlike": 100, 
     "num_comment": 500, 
-    "comment_length_range": [1, 100]
+    "comment_length_range": [1, 100], 
+    "num_blogvisit": 2000, 
+    "num_tracker": 200, 
+    "hist_day": [-100, -10]
 }
