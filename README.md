@@ -78,6 +78,7 @@
 
 
 + Enable google account signin
+    - This part has been put into test/test.sh, so you don't need to do it manually
     - Tutorial: https://medium.com/@whizzoe/in-5-mins-set-up-google-login-to-sign-up-users-on-django-e71d5c38f5d5
     - Go to the admin@aphanti.com google developer console -> APIs credentials to get client ID and client secret (we have also saved them in web_info.json)
     - run makemigrations, migrate, and runserver on 127.0.0.1:8000

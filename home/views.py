@@ -41,4 +41,6 @@ def add_to_sublist_view(request):
     else:
         return redirect('home')
 
-
+def terms_of_service_view(request):
+    return render(request, 'terms_of_service.html', {})
+    
