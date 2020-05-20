@@ -13,7 +13,7 @@ class Blog(models.Model):
         null=False, blank=False)
     title = models.CharField(max_length=400)
     summary = models.TextField(max_length=4000, blank=True)
-    body = RichTextUploadingField()
+    body = RichTextUploadingField(config_name="default")
     create_time = models.DateTimeField(auto_now_add=True)
     update_time = models.DateTimeField(blank=True, null=True)
     publish_time = models.DateTimeField(blank=True, null=True)
@@ -96,3 +96,13 @@ class Follow(models.Model):
         ordering = ['-create_time']
 
 
+class BlogSearchTrack(models.Model):
+    category  = models.CharField(max_length=128, blank=True)
+    past_time = models.CharField(max_length=128, blank=True)
+    search_text = models.CharField(max_length=256, blank=True)
+    create_time = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return "[" + self.create_time.strftime("%m/%d/%Y, %H:%M:%S")+ "]" 
+    class Meta:
+        ordering = ['-create_time']

@@ -212,9 +212,39 @@ def myfollowings_view(request):
 def mysetting_view(request):
     if request.user.is_authenticated:
         if request.method == 'POST':
-            pass
+            if 'show_email' in request.POST:
+                request.user.setting_show_email = True
+            else:
+                request.user.setting_show_email = False
 
-        return render(request, 'mysetting.html', {})
+            if 'show_fullname' in request.POST:
+                request.user.setting_show_fullname = True
+            else:
+                request.user.setting_show_fullname = False
+
+            if 'notify_comment' in request.POST:
+                request.user.setting_notify_comment = True
+            else:
+                request.user.setting_notify_comment = False
+
+            if 'notify_like' in request.POST:
+                request.user.setting_notify_like = True
+            else:
+                request.user.setting_notify_like = False
+
+            if 'notify_follow' in request.POST:
+                request.user.setting_notify_follow = True
+            else:
+                request.user.setting_notify_follow = False
+
+            if 'notify_new_blog' in request.POST:
+                request.user.setting_notify_new_blog = True
+            else:
+                request.user.setting_notify_new_blog = False
+
+            request.user.save()
+
+        return render(request, 'mysetting.html', {'user': request.user})
     else:
         return redirect('login')
 

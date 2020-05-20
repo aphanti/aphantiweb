@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 
 # Create your views here.
-from .models import Blog, Tag, Category, Comment, Follow
+from .models import Blog, Tag, Category, Comment, Follow, BlogSearchTrack
 import markdown
 from django.core.paginator import Paginator
 from django.http import HttpResponse
@@ -66,15 +66,18 @@ def bloglistview(request):
         # filter by category
         tmp = [x['name'] for x in cats if x['selected']]
         if tmp[0] != 'All': blog_list = blog_list.filter(category__name=tmp[0])
+        blogsearch = BlogSearchTrack(category=tmp[0])
 
         # filter by publish time
         tmp = [x['value'] for x in pasts if x['checked']]
         blog_list = blog_list.filter(publish_time__gte=timezone.now()-timedelta(days=allpasts[tmp[0]]))
+        blogsearch.past_time = tmp[0]
 
         # search text
         if len(search_text) > 0:
+            blogsearch.search_text = search_text
             blog_list = searching_blogs(search_text, blog_list)
- 
+        blogsearch.save()
 
     blog_list = blog_list.order_by('-publish_time')
     paginator = Paginator(blog_list,  blog_per_page)

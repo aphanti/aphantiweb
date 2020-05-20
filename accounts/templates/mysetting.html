@@ -8,54 +8,82 @@
 
 
 </style>
-
-    <form class="form-check">
-        <input class="form-check-input" type="checkbox" value="" id="show_email">
+    <form id="setting_form" method="POST">
+    {% csrf_token %}
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="show_email" name="show_email" {% if user.setting_show_email %}checked{% endif %}>
         <label class="form-check-label" for="show_email">
             Show my email address on my public profile page
         </label>
-    </form>
+    </div>
 
     <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="" id="show_fullname">
+        <input class="form-check-input" type="checkbox" id="show_fullname" name="show_fullname" {% if user.setting_show_fullname %}checked{% endif %}>
         <label class="form-check-label" for="show_fullname">
             Show my full name on my public profile page
         </label>
     </div>
 
     <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="" id="notify_comment">
+        <input class="form-check-input" type="checkbox" id="notify_comment" name="notify_comment" {% if user.setting_notify_comment %}checked{% endif %}>
         <label class="form-check-label" for="notify_comment">
             Notify me when people comment on my blogs
         </label>
     </div>
 
     <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="" id="notify_like">
+        <input class="form-check-input" type="checkbox" id="notify_like" name="notify_like" {% if user.setting_notify_like %}checked{% endif %}>
         <label class="form-check-label" for="notify_like">
             Notify me when people like my blogs
         </label>
     </div>
 
     <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="" id="notify_follow">
+        <input class="form-check-input" type="checkbox" id="notify_follow" name="notify_follow" {% if user.setting_notify_follow %}checked{% endif %}>
         <label class="form-check-label" for="notify_follow">
             Notify me when people follow me
         </label>
     </div>
 
     <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="" id="notify_new_blog">
+        <input class="form-check-input" type="checkbox" id="notify_new_blog" name="notify_new_blog" {% if user.setting_notify_new_blog %}checked{% endif %}>
         <label class="form-check-label" for="notify_new_blog">
             Notify me when the people I follow post new blogs
         </label>
     </div>
 
+    </form>
 
 <script>
 
     $('#tab_mysetting').addClass('active');
     $('#mysetting').addClass('show active');
+
+    $('#show_email').change(function(){
+        $('#setting_form').submit();
+    });
+
+    $('#show_fullname').change(function(){
+        $('#setting_form').submit();
+    });
+
+    $('#notify_comment').change(function(){
+        $('#setting_form').submit();
+    });
+
+    $('#notify_like').change(function(){
+        $('#setting_form').submit();
+    });
+
+    $('#notify_follow').change(function(){
+        $('#setting_form').submit();
+    });
+
+    $('#notify_new_blog').change(function(){
+        $('#setting_form').submit();
+    });
+
+
 
 </script>
 

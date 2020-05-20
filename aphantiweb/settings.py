@@ -82,6 +82,7 @@ INSTALLED_APPS = [
     'ckeditor_uploader', 
     'django_user_agents', 
     'tracking_analyzer', 
+    'django_social_share', 
     #'django_user_agents', 
 ]
 
@@ -249,6 +250,31 @@ CKEDITOR_UPLOAD_PATH = '/'
 CKEDITOR_IMAGE_BACKEND = "pillow"
 
 CKEDITOR_CONFIGS = {
+    'feedback': {
+        'skin': 'moono', 
+        'toolbar_Custom': [ 
+            ['Format', 'Font', 'FontSize', '-', 'TextColor', 'BGColor'], 
+            ['Bold', 'Italic', 'Underline', '-', 'Subscript', 'Superscript'], 
+            ['NumberedList', 'BulletedList'], 
+        ], 
+        'toolbar': 'Custom', 
+        'height': 200, 
+        'width': "100%", 
+        'tabSpaces': 4,
+        'extraPlugins': ','.join([ 
+            'div', 
+            'autolink', 
+            'autoembed', 
+            'embedsemantic', 
+            'autogrow', 
+            'widget', 
+            'lineutils', 
+            'clipboard', 
+            'dialog', 
+            'dialogui', 
+            'elementspath', 
+        ]), 
+    }, 
     'default': {
         'skin': 'moono',
         #'skin': 'office2013',

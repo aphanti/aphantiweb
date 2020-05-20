@@ -1,0 +1,57 @@
+
+{% extends "base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
+
+{% block content %}
+
+<script type="text/javascript" src="{% static "ckeditor/ckeditor-init.js" %}"></script>
+<script type="text/javascript" src="{% static "ckeditor/ckeditor/ckeditor.js" %}"></script>
+
+
+<style>
+    
+    .django-ckeditor-widget { 
+        width: 100%; 
+    } 
+
+</style>
+
+
+<form  method="POST" style="padding: 0 20px; width:100%;">
+    {% csrf_token %}
+
+
+    <!-- email -->
+    {% if form.email.errors %}
+        <div class="alert alert-danger" role="alert">
+            {{ form.email.errors.as_text }}
+        </div>
+    {% endif %}
+    <div class="form-group">
+        Your Email:
+        {% if user.is_authenticated %}
+            {% render_field form.email type="email" name="email" class="form-control" placeholder="Enter your email address" value=user.email %}    
+        {% else %}
+            {% render_field form.email type="email" name="email" class="form-control" placeholder="Enter your email address" %}
+        {% endif %}
+    </div>
+
+
+    <!-- Body -->
+    <p>Your feedback:</p>
+    {% if form.body.errors %}
+        <div class="alert alert-danger" role="alert">
+            {{ form.body.errors.as_text }}
+        </div>
+    {% endif %}
+    <div id="blog_body" class="form-group" style="width:100%;">
+        {% render_field form.body class="form-control" %}
+    </div>
+
+    <button class="btn btn-success" type="submit" name="feedback">Submit feedback</button>
+</form>
+
+
+{% endblock %}

@@ -73,6 +73,7 @@
     {% if num < 1 %}
         <h4>No blog found.</h4>
     {% else %}
+        Sorted by: Publish time | views | likes | comments
         {% for blog in blogs %}
             <div class="container-fluid blog_list">
                 <h4 class="blog_title"><a href="/blog/{{blog.id}}" style="color:#268;">{{ blog.title }}</a></h4>

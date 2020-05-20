@@ -19,7 +19,7 @@ django.setup()
 from aphantiweb.settings import WEB_INFO_JSON, SITE_ID
 from accounts.models import WebUser
 from allauth.socialaccount.models import SocialApp
-from blog.models import Blog, Comment, Category, Tag, Follow
+from blog.models import Blog, Comment, Category, Tag, Follow, BlogSearchTrack
 from home.models import SubscribeList
 from django.contrib.sites.models import Site
 from tracking_analyzer.models import Tracker

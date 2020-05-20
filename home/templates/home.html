@@ -31,6 +31,31 @@
         background-position: 50% 50%;
     } 
 
+    .category-card {
+        width: 175px; 
+        height: 150px; 
+        align-items: center;
+        text-align: center;
+        display: inline-block;
+        border-radius: 4px;
+        box-shadow: 4px 4px 6px -6px #222;
+        margin: 10px 20px;
+    }
+
+    .category-img {
+        width: 175px;
+        height: 150px;
+        border-radius: 4px;
+        object-fit: cover;
+        opacity: 0.3;
+    }
+
+    .tag-span {
+        color:#000; 
+        padding: 5px 15px; 
+        border-radius: 15px;
+    }
+
     @media screen and (max-width: 992px) {
         .jumbotron {
             margin: 0 0 !important;
@@ -48,6 +73,29 @@
     </div>
     
 </div>  
+
+<div class="container text-center" style="width: 100%; margin-top: 20px;">
+{% for tag in tags  %}
+    <div style="display: inline-flex; padding: 0; margin: 2px 0;">
+    <a href="/blog/?search={{tag.name}}"
+    <span class='tag-span' style="background-color: {{tag.bg_color}};">#{{tag.name}}</span>
+    </a>
+    </div>
+{% endfor %}
+
+</div>
+
+
+<div class="container" style="width: 100%; margin-top: 40px;">
+{% for category in categories  %}
+    <a href="/blog/?category={{category.name}}">
+    <div class="category-card text-center">
+        <img class="category-img" src="{{ category.bg_image.url }}">
+        <h4 style="position: relative; top: -55%; text-shadow: 0 0 6px white; color: rgb(4, 77, 105);">{{category.name}}</h4>
+    </div>
+    </a>
+{% endfor %}
+</div>
 
 {% endblock %}
 

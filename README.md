@@ -18,6 +18,7 @@
     - django-allauth
     - django-ckeditor
     - django-widget-tweaks
+    - django-social-share
     - geoip2: pip install geoip2
         + download geoip data files from: https://dev.maxmind.com/geoip/geoip2/geolite2/
     - django-tracking-analyzer: pip install django-tracking-analyzer
@@ -54,6 +55,7 @@
     - create /opt/aphanti/web_info.json which contains mysql, gmail pasword etc., like this:
     ```python
     {
+        "domain_name": "127.0.0.1:8000", 
         "APHANTI_ENV": "dev",
         "APHANTI_SECRET_KEY": "xxx",
         "APHANTI_MYSQL_DBNAME": "aphantiweb",
@@ -66,7 +68,12 @@
         "google_app_client_secret": "xxx"
     }
     ```
-    - where APHANTI_ENV should be "dev" on your development computer, and "prod" on your deployment server
+    - on development machine: 
+        + APHANTI_ENV should be "dev" 
+        + domain_name should be "127.0.0.1:8000"
+    - on deploy machine:
+        + APHANTI_ENG = "prod"
+        + domain_name = "www.aphanti.com"
 
 
 + Create simulated data in MySQL and run test 

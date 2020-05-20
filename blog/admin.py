@@ -2,7 +2,7 @@ from django.contrib import admin
 
 # Register your models here.
 
-from .models import Blog, Comment, Tag, Category, Follow
+from .models import Blog, Comment, Tag, Category, Follow, BlogSearchTrack
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
@@ -43,4 +43,11 @@ class FollowAdmin(admin.ModelAdmin):
     readonly_fields = ['create_time', ]
     list_filter = ['follower', 'befollowed']
 
+
+@admin.register(BlogSearchTrack)
+class BlogSearchTrackAdmin(admin.ModelAdmin):
+    list_display = ('create_time', 'category', 'past_time', 'search_text')
+    fields = ['category', 'past_time', 'search_text']
+    readonly_fields = ['create_time', ]
+    list_filter = ['category', 'past_time']
 

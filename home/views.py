@@ -4,13 +4,17 @@ from django.shortcuts import render
 from django.shortcuts import render, redirect, get_object_or_404
 
 from accounts.models import WebUser
+from blog.models import Category, Tag
 from blog.views import add_follow, delete_follow
 from .models import SubscribeList
+from .forms import FeedbackForm
 from django.http import Http404  
 
 
 def homeview(request):
-    return render(request, 'home.html', context = {})
+    return render(request, 'home.html', 
+        context = {'categories': Category.objects.all().distinct() , 
+        'tags': Tag.objects.all().distinct() })
     
 
 def author_list_view(request):
@@ -44,3 +48,13 @@ def add_to_sublist_view(request):
 def terms_of_service_view(request):
     return render(request, 'terms_of_service.html', {})
     
+
+def feedback_view(request):
+    if request.method == "POST":
+        form = FeedbackForm(request.POST)
+        if form.is_valid():
+            form.save(commit=True)
+            return render(request, "feedback_done.html", {"email": request.POST['email']})
+    else:
+        form = FeedbackForm()
+    return render(request, "feedback.html", {"form": form})
