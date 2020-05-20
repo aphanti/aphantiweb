@@ -267,6 +267,7 @@
                 event.preventDefault();
                 // Trigger the button element with a click
                 document.getElementById("search_button_id").click();
+                window.location.href = '/blog/?search='+search_input.value;
                 //alert(search_input.value);
             }
         }); 

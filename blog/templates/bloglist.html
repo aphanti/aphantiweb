@@ -27,39 +27,81 @@
         margin: 10px 0;
     }
 
+    #blog-list-col {
+        border-left: 4px solid gainsboro;
+        padding-left: 20px;
+    }
+
 </style>
 
+<div class='col-sm-3'>
+    <form method="POST">
+    {% csrf_token %}
 
-<div class='container-fluid'>
+    <div class="form-group">
+        <label for="category_select"><strong>Category:</strong></label>
+        <select class="form-control" id="category_select" name="category">
+            {% for cat in category %}
+            <option {% if cat.selected %}selected{% endif %} value="{{cat.name}}">{{cat.name}}</option>
+            {% endfor %}
+        </select>
+    </div>
 
-    {% for blog in blogs %}
-        <div class="container-fluid blog_list">
-            <h4 class="blog_title"><a href="/blog/{{blog.id}}" style="color:#268;">{{ blog.title }}</a></h4>
-            <p>By: 
-                <a href="/author/{{blog.author.id}}">{{ blog.author.display_name }}</a>  
-                <i class='fa fa-clock-o' style="margin-left: 10px;"></i> {{ blog.publish_time | date:'Y-m-d H:i' }}
-                <i class='fa fa-folder-open' style="margin-left: 10px;"></i> <a href="#"> {{ blog.category.name }} </a>
-            </p>
-        </div>
+    <strong>List blogs in the past:</strong>
+    {% for past in past_time %}
+    <div class="form-check">
+        <input class="form-check-input" type="radio" name="past_time" id="{{past.value}}" value="{{past.value}}" {% if past.checked %}checked{% endif %}>
+        <label class="form-check-label" for="{{past.value}}">
+            {{past.value}}
+        </label>
+    </div>
     {% endfor %}
 
-    <div class="pagination" style="margin-top: 10px;">
-        <span class="step-links" style="display: inline-flex; align-items: center;">
-            {% if blogs.has_previous %}
-                <a href="?page=1">&laquo; <button class="btn btn-light page-button-end">first</button></a>
-                <a href="?page={{ blogs.previous_page_number }}"><button class="btn btn-light page-button">previous</button></a>
-            {% endif %}
+    <br>
 
-            <span class="current">
-                Page {{ blogs.number }} of {{ blogs.paginator.num_pages }}.
+    <div class="form-group">
+        <label for="search_blog_text"><strong>Search: </strong>(titles, authors, summaries, tags)</label>
+        <input type="text" class="form-control" id="search_blog_text" name="search_blog_text" value="{{search_text}}">
+    </div>
+
+    <button type="submit" name="search_button" class="btn btn-primary" style="width: 100%;">Search Blogs</button>
+
+    </form>
+</div>
+
+<div class='col-sm-9' id='blog-list-col'>
+    {% if num < 1 %}
+        <h4>No blog found.</h4>
+    {% else %}
+        {% for blog in blogs %}
+            <div class="container-fluid blog_list">
+                <h4 class="blog_title"><a href="/blog/{{blog.id}}" style="color:#268;">{{ blog.title }}</a></h4>
+                <p>By: 
+                    <a href="/author/{{blog.author.id}}">{{ blog.author.display_name }}</a>  
+                    <i class='fa fa-clock-o' style="margin-left: 10px;"></i> {{ blog.publish_time | date:'Y-m-d H:i' }}
+                    <i class='fa fa-folder-open' style="margin-left: 10px;"></i> <a href="/blog/?category={{blog.category.name}}"> {{ blog.category.name }} </a>
+                </p>
+            </div>
+        {% endfor %}
+
+        <div class="pagination" style="margin-top: 10px;">
+            <span class="step-links" style="display: inline-flex; align-items: center;">
+                {% if blogs.has_previous %}
+                    <a href="?page=1">&laquo; <button class="btn btn-light page-button-end">first</button></a>
+                    <a href="?page={{ blogs.previous_page_number }}"><button class="btn btn-light page-button">previous</button></a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ blogs.number }} of {{ blogs.paginator.num_pages }}.
+                </span>
+
+                {% if blogs.has_next %}
+                    <a href="?page={{ blogs.next_page_number }}"><button class="btn btn-light page-button">next</button></a>
+                    <a href="?page={{ blogs.paginator.num_pages }}"><button class="btn btn-light page-button-end">last</button> &raquo;</a>
+                {% endif %}
             </span>
-
-            {% if blogs.has_next %}
-                <a href="?page={{ blogs.next_page_number }}"><button class="btn btn-light page-button">next</button></a>
-                <a href="?page={{ blogs.paginator.num_pages }}"><button class="btn btn-light page-button-end">last</button> &raquo;</a>
-            {% endif %}
-        </span>
-    </div>   
+        </div>   
+    {% endif %}
 </div>
 
 

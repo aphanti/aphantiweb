@@ -1,7 +1,28 @@
 {% extends "base.html" %}
 {% load static %}
+{% load socialaccount %}
 {% load widget_tweaks %}
 {% block content %}
+
+<style>
+  .sign-in-google {
+    background: url("{% static 'google_logo.png' %}") #f6f6f6;
+    background-position: 0px -5px;
+    background-repeat: no-repeat;
+    background-size: 45px 45px;
+    padding-left: 50px;
+    color: #000;
+    width: 100%;    
+  }
+  .sign-in-google:hover {
+    background: url("{% static 'google_logo.png' %}") #ddd;
+    background-position: 0px -5px;
+    background-repeat: no-repeat;
+    background-size: 45px 45px;
+    padding-left: 50px;
+    color: #000;
+  }
+</style>
 
 
 <div class="container-fluid col-lg-5 col-md-6 col-sm-8 col-xs-12 shadow-lg p-3 mb-5 bg-white rounded text-center" >
@@ -44,6 +65,22 @@
 
 
     <p>Already have an account? <strong><a href="/accounts/login/">Log in</a></strong></p>
+    <br>
+
+    <table class='text-center' style="width:100%;">
+        <tr>
+            <td style="border-top: 1px solid silver;"></td>
+            <td style="width: 40px;">
+                <div style="transform: translate(0px, -12px);">or</div>
+            </td>
+            <td style="border-top: 1px solid silver;"></td>
+        </tr>
+    </table>
+    
+    <p>
+        <a type='button' class="btn btn-primary sign-in-google" href="{% provider_login_url 'google' %}">Log In with Google</a>
+    </p>
+
 
     <br>
     <small style="color:slategrey;">By signing up, you agree to our <a href="/TOS">Terms of Service</a>.</small>

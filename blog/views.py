@@ -5,24 +5,87 @@ from .models import Blog, Tag, Category, Comment, Follow
 import markdown
 from django.core.paginator import Paginator
 from django.http import HttpResponse
-from datetime import datetime
+from datetime import datetime, timedelta
 from .forms import BlogForm
 from tracking_analyzer.models import Tracker
 from django.utils import timezone
 from django.http import Http404  
 from django.http import HttpResponseRedirect
-
+import random 
 
 
 blog_per_page = 10
 
 
+def searching_blogs(text, blogs):
+    text = text.lower()
+    blogs = blogs.filter(title__icontains=text) | blogs.filter(author__display_name__icontains=text) | blogs.filter(tag__name__icontains=text) | blogs.filter(summary__icontains=text)
+    return blogs.distinct()
+
+
 def bloglistview(request):
-    blog_list = Blog.objects.filter(is_draft=False).order_by('-publish_time')
+    # get, no page:     all refresh
+    # get, page:        check -> filter, content
+    # post, no page:    filter, content
+    # post, page:       filter, contant
+
+    allcategory = ['All'] + [c.name for c in Category.objects.all()]
+    allpasts = {'1 day':1, '1 week':7, '1 month':30, '6 months':180, '1 year':365, 'All time':9999}
+
+    cats = [{'name':'All', 'selected': True}] + [{'name':c.name, 'selected':False} for c in Category.objects.all()]
+    pasts = [{'value': x, 'checked': False} for x in allpasts]
+    pasts[-1]['checked'] = True
+    search_text = ''
+    blog_list = Blog.objects.filter(is_draft=False)
+    filtering = False
+
+    if request.method == 'GET':
+        if ('page' in request.GET) and ('blog_filter' in request.session):
+            cats = request.session['blog_filter']['category']
+            pasts = request.session['blog_filter']['past_time']
+            search_text = request.session['blog_filter']['search_blog_text']
+            filtering = True
+        if 'category' in request.GET:
+            cats = [{'name':x, 'selected':True} if x==request.GET['category'] else {'name':x, 'selected':False} for x in allcategory]
+            filtering = True
+        if 'search' in request.GET:
+            search_text = request.GET['search']
+            filtering = True
+    else:
+        filtering = True
+        if 'category' in request.POST:
+            cats = [{'name':x, 'selected':True} if x==request.POST['category'] else {'name':x, 'selected':False} for x in allcategory]
+        if 'past_time' in request.POST:
+            pasts = [{'value':x, 'checked':True} if x==request.POST['past_time'] else {'value':x, 'checked':False} for x in allpasts]
+        if 'search_blog_text' in request.POST:
+            search_text = request.POST['search_blog_text']
+
+    if filtering:
+        request.session['blog_filter'] = {'category':cats, 'past_time':pasts, 
+            'search_blog_text': search_text}
+        # filter by category
+        tmp = [x['name'] for x in cats if x['selected']]
+        if tmp[0] != 'All': blog_list = blog_list.filter(category__name=tmp[0])
+
+        # filter by publish time
+        tmp = [x['value'] for x in pasts if x['checked']]
+        blog_list = blog_list.filter(publish_time__gte=timezone.now()-timedelta(days=allpasts[tmp[0]]))
+
+        # search text
+        if len(search_text) > 0:
+            blog_list = searching_blogs(search_text, blog_list)
+ 
+
+    blog_list = blog_list.order_by('-publish_time')
     paginator = Paginator(blog_list,  blog_per_page)
     page = request.GET.get('page')
     blogs = paginator.get_page(page)
-    return render(request, 'bloglist.html', {'blogs': blogs, 'num': len(blog_list)})
+
+    return render(request, 'bloglist.html', \
+        {'blogs': blogs, 'num': len(blog_list), 
+        'category': cats, 
+        'past_time': pasts, 
+        'search_text': search_text })
 
 
 def blogdetailview(request, pk):
@@ -104,15 +167,27 @@ def create_blog_view(request):
             form = BlogForm(request.POST)
             if form.is_valid():
                 blog = form.save(commit=False)
-                blog.author = request.user                
+                blog.author = request.user
+                blog = form.save(commit=True)
                 if 'save_to_draft' in request.POST:
                     blog.update_time = timezone.now()
                     blog.is_draft = True
                 else:
                     blog.publish_time = timezone.now()
                     blog.is_draft = False
-
                 blog.save()
+
+                all_tag = [t.name for t in Tag.objects.all()]
+                for name in request.POST:
+                    if ('newtag_' in name):
+                        if (request.POST[name] not in all_tag):
+                            newtag = Tag(name=request.POST[name], bg_color=get_random_tag_color())
+                            newtag.save()
+                        else:
+                            newtag = Tag.objects.get(name=request.POST[name])
+                        blog.tag.add(newtag)
+                blog.save()
+
                 if blog.is_draft:
                     return redirect("mydrafts")
                 else:
@@ -140,6 +215,18 @@ def update_blog_view(request, pk):
                         blog.publish_time = timezone.now()
                         blog.is_draft = False
                     blog.save()
+
+                    all_tag = [t.name for t in Tag.objects.all()]
+                    for name in request.POST:
+                        if ('newtag_' in name):
+                            if (request.POST[name] not in all_tag):
+                                newtag = Tag(name=request.POST[name], bg_color=get_random_tag_color())
+                                newtag.save()
+                            else:
+                                newtag = Tag.objects.get(name=request.POST[name])
+                            blog.tag.add(newtag)
+                    blog.save()
+
                     if blog.is_draft:
                         return redirect("mydrafts")
                     else:
@@ -164,3 +251,9 @@ def delete_follow(follower_id, befollowed_id):
     if follow:
         follow.delete()
     return 
+
+
+def get_random_tag_color():
+    rgb = random.choices(range(128,256), k=3)
+    return "#{:02x}{:02x}{:02x}".format(rgb[0], rgb[1], rgb[2])
+

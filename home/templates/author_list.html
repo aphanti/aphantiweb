@@ -6,7 +6,7 @@
     .card {
         width:140px; 
         height:auto; 
-        display: inline-flex; 
+        display: inline-block; 
         margin: 10px 20px;
     }
 
@@ -35,6 +35,20 @@
 </style>
 
 <div class='container-fluid'>
+
+    <div class="card">
+        <a href="{% url 'signup' %}">  
+            <div class="text-center">  
+                <i class="fa fa-plus-circle" style="font-size: 138px;"></i>
+            </div>
+        <div class="card-body text-center">
+            <br>
+            <h5 class="card-title" >Join Us?</h5>
+            <br>
+        </div>
+        </a>
+    </div>
+
 
     {% for author in authors %}
     <div class="card">

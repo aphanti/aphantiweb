@@ -2,7 +2,7 @@ from django.urls import path, re_path
 from . import views
 
 urlpatterns = [
-    path('signup', views.signup, name='signup'), 
+    path('new', views.signup, name='signup'), 
     path('verify/<slug:uidb64>/<slug:token>/', views.verify_account, name='verify'),
     path('', views.profile_view, name="myprofile"), 
     path('update', views.update_profile_view, name="update_profile"), 

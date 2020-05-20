@@ -68,13 +68,13 @@
         
         <input type="hidden" name="next" value="{{ next }}" />
 
-        <button class="btn btn-primary" type="submit" value="login" style="width:100%;">Log in</button>
+        <button class="btn btn-primary" type="submit" value="login" style="width:100%;">Log In</button>
     </form>
 
     <br>
     <p><strong><a href="/accounts/password_reset/">Forgot password?</a></strong></p>
 
-    <p>Don't have an account? <strong><a href="/accounts/signup">Sign up</a></strong></p>
+    <p>Don't have an account? <strong><a href="{% url 'signup' %}">Sign up</a></strong></p>
     <br>
 
     <table class='text-center' style="width:100%;">

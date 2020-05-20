@@ -16,6 +16,50 @@
         width: 100%; 
     } 
 
+    #new-tags {
+        margin: 0px;
+        margin-bottom: 20px;
+        display: inline-flex; 
+        width:100%;
+    }
+
+    .new-tag-input {
+        border-radius: 15px;
+        height: 30px;
+        width: 150px;
+        margin: 2px 2px;
+        margin-right: -32px;
+        padding-right: 30px;
+    }
+
+    .close-tag {
+        border-radius: 15px;
+        height: 30px;
+        width: 30px;
+        margin: 2px;
+        padding: 0px;
+        font-size: 18px;
+        text-align: center;
+        vertical-align: middle;
+        line-height: 10px;
+        background-color: coral;
+        border: 0px;
+    }
+    
+    #add-new-tag-button {
+        border-radius: 15px;
+        margin: 2px;
+        height: 30px;
+        width: 60px;
+        padding: 0px;
+        font-size: 20px;
+        font-weight: bold;
+        text-align: center;
+        vertical-align: middle;
+        line-height: 10px;
+        display: inline-block;
+    }
+
     @media screen and (max-width: 992px) {
         .cke_maximized {
             z-index: 10000 !important;
@@ -61,7 +105,12 @@
     {% endif %}
     <div class="form-group">
         Tags:
-        {% render_field form.tag tyle="select multiple" class="selectpicker form-control" data-live-search="true" style="width:100%;" %}
+        {% render_field form.tag tyle="select multiple" class="selectpicker form-control" data-live-search="true" data-done-button="true" style="width:100%;" %}
+    </div>
+
+    Add new tags: 
+    <div class="form-group row" id="new-tags">
+        <input id='add-new-tag-button' class="btn btn-success" type="button" value="+"/>
     </div>
 
 
@@ -95,5 +144,25 @@
 </form>
 
 
+<script>
+
+    $("#add-new-tag-button").click(function(){
+        var ntag = $(".new-tag-input").length;
+        var input = $("<input required type='text' name='newtag_"+(ntag+1)+"' class='form-control new-tag-input' id='newtag_"+(ntag+1)+"'>");
+        var close_tag = $("<input type='button' class='btn btn-danger close-tag' id='closetag_"+(ntag+1)+"' value='x'>");
+
+        close_tag.click(function(){
+            console.log('asdfasf');
+            input.remove();
+            close_tag.remove();
+        });
+
+        $("#new-tags").append(input);
+        $("#new-tags").append(close_tag);
+
+    });
+
+
+</script>
 
 {% endblock %}
