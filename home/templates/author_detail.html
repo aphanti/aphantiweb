@@ -64,20 +64,22 @@
     </div>
     <div class="col-sm-8">
         <h1 style="display: inline-flex; align-items: center; margin-bottom: 20px;">{{ author.display_name }} 
-            {% if user.is_authenticated %}
-                {% if author.id in user.get_myfollowing_ids %}
-                    <form method='POST' style='margin:10px; display: inline-flex;'>
-                        {% csrf_token %}
-                        <button class='btn btn-light follow-button' type='submit' name='delete_follow' style="background-color:bisque;">Unfollow</button>
-                    </form>
+            {% if author.is_author and author.is_verified %}
+                {% if user.is_authenticated %}
+                    {% if author.id in user.get_myfollowing_ids %}
+                        <form method='POST' style='margin:10px; display: inline-flex;'>
+                            {% csrf_token %}
+                            <button class='btn btn-light follow-button' type='submit' name='delete_follow' style="background-color:bisque;">Unfollow</button>
+                        </form>
+                    {% else %}
+                        <form method="POST" style='margin-left: 10px; display: inline-flex;'>
+                            {% csrf_token %}
+                            <button class='btn btn-light follow-button' type="submit" name="add_follow">Follow</button>
+                        </form>
+                    {% endif %}
                 {% else %}
-                    <form method="POST" style='margin-left: 10px; display: inline-flex;'>
-                        {% csrf_token %}
-                        <button class='btn btn-light follow-button' type="submit" name="add_follow">Follow</button>
-                    </form>
+                    <a href="/accounts/login/?next={{request.path}}" class='btn btn-light follow-button'>Follow</a>
                 {% endif %}
-            {% else %}
-                <a href="/accounts/login/?next={{request.path}}" class='btn btn-light follow-button'>Follow</a>
             {% endif %}
         </h1>
         {% if author.setting_show_email %}

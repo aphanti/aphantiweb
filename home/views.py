@@ -9,6 +9,9 @@ from blog.views import add_follow, delete_follow
 from .models import SubscribeList
 from .forms import FeedbackForm
 from django.http import Http404  
+from django.template.loader import render_to_string
+from django.contrib.sites.shortcuts import get_current_site
+
 
 
 def homeview(request):
@@ -24,17 +27,18 @@ def author_list_view(request):
 
 def author_detail_view(request, pk):
     author = get_object_or_404(WebUser, id=int(pk))
-    if author.is_verified and author.is_author:
-        if request.method == 'POST':
-            if 'add_follow' in request.POST:
-                add_follow(request.user.id, author.id)
-            
-            if 'delete_follow' in request.POST:
-                delete_follow(request.user.id, author.id)
+    #if author.is_verified and author.is_author:
+    if request.method == 'POST':
+        if 'add_follow' in request.POST:
+            add_follow(request, request.user, author)
+            #send_notify_follow_email(request, request.user, author)
+        
+        if 'delete_follow' in request.POST:
+            delete_follow(request.user.id, author.id)
 
-        return render(request, 'author_detail.html', context={'author': author})
-    else:
-        raise Http404  
+    return render(request, 'author_detail.html', context={'author': author})
+    #else:
+    #    raise Http404  
 
 def add_to_sublist_view(request):
     if request.method == 'POST':
@@ -58,3 +62,6 @@ def feedback_view(request):
     else:
         form = FeedbackForm()
     return render(request, "feedback.html", {"form": form})
+
+
+

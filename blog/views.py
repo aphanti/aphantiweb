@@ -11,6 +11,8 @@ from tracking_analyzer.models import Tracker
 from django.utils import timezone
 from django.http import Http404  
 from django.http import HttpResponseRedirect
+from django.template.loader import render_to_string
+from django.contrib.sites.shortcuts import get_current_site
 import random 
 
 
@@ -40,7 +42,9 @@ def bloglistview(request):
     filtering = False
 
     if request.method == 'GET':
-        if ('page' in request.GET) and ('blog_filter' in request.session):
+        if 'sortby' in request.GET:
+            request.session['sortby'] = request.GET['sortby']
+        if (('page' in request.GET) or ('sortby' in request.GET)) and ('blog_filter' in request.session):
             cats = request.session['blog_filter']['category']
             pasts = request.session['blog_filter']['past_time']
             search_text = request.session['blog_filter']['search_blog_text']
@@ -52,6 +56,7 @@ def bloglistview(request):
             search_text = request.GET['search']
             filtering = True
     else:
+        request.session['sortby'] = 'publish_time'
         filtering = True
         if 'category' in request.POST:
             cats = [{'name':x, 'selected':True} if x==request.POST['category'] else {'name':x, 'selected':False} for x in allcategory]
@@ -79,16 +84,27 @@ def bloglistview(request):
             blog_list = searching_blogs(search_text, blog_list)
         blogsearch.save()
 
-    blog_list = blog_list.order_by('-publish_time')
+    sortby = request.session.get('sortby', 'publish_time')
+    if sortby == 'publish_time':
+        blog_list = blog_list.order_by('-publish_time')
+    if sortby == 'views':
+        blog_list = blog_list.order_by('-num_visit')
+    if sortby == 'likes':
+        blog_list = blog_list.order_by('-num_like')
+    if sortby == 'comments':
+        blog_list = sorted(blog_list, key= lambda x: -(x.get_comment_count()))
+
     paginator = Paginator(blog_list,  blog_per_page)
     page = request.GET.get('page')
     blogs = paginator.get_page(page)
+
 
     return render(request, 'bloglist.html', \
         {'blogs': blogs, 'num': len(blog_list), 
         'category': cats, 
         'past_time': pasts, 
-        'search_text': search_text })
+        'search_text': search_text, 
+        'sortby': sortby })
 
 
 def blogdetailview(request, pk):
@@ -110,9 +126,11 @@ def blogdetailview(request, pk):
                     blog=blog, 
                     create_time = timezone.now() )
                 comment.save()
+                send_notify_comment_email(request, blog)
+
             
             if 'add_follow' in request.POST:
-                add_follow(request.user.id, blog.author.id)
+                add_follow(request, request.user, blog.author)
             
             if 'delete_follow' in request.POST:
                 delete_follow(request.user.id, blog.author.id)
@@ -122,6 +140,7 @@ def blogdetailview(request, pk):
                     request.session['has_liked'] = [blog.id]
                     blog.num_like += 1
                     blog.save()
+                    send_notify_like_email(request, blog)
                 else:
                     if blog.id not in request.session['has_liked']:
                         tmp = request.session['has_liked']
@@ -129,6 +148,7 @@ def blogdetailview(request, pk):
                         request.session['has_liked'] = tmp
                         blog.num_like += 1
                         blog.save()
+                        send_notify_like_email(request, blog)
                     else:
                         tmp = list(set(request.session['has_liked']))
                         tmp.remove(blog.id) 
@@ -242,11 +262,12 @@ def update_blog_view(request, pk):
         return redirect('login')
 
 
-def add_follow(follower_id, befollowed_id):
-    follow = Follow(follower_id=follower_id, 
-        befollowed_id=befollowed_id, 
+def add_follow(request, follower, befollowed):
+    follow = Follow(follower_id=follower.id, 
+        befollowed_id=befollowed.id, 
         create_time = timezone.now())
     follow.save()
+    send_notify_follow_email(request, follower, befollowed)
     return 
 
 def delete_follow(follower_id, befollowed_id):
@@ -259,4 +280,36 @@ def delete_follow(follower_id, befollowed_id):
 def get_random_tag_color():
     rgb = random.choices(range(128,256), k=3)
     return "#{:02x}{:02x}{:02x}".format(rgb[0], rgb[1], rgb[2])
+
+
+def send_notify_comment_email(request, blog):
+    if blog.author.setting_notify_comment:
+        subject = "New comment on your blog"
+        message = render_to_string('notify_comment_email.html', {
+            'blog': blog, 
+            'domain': get_current_site(request).domain, 
+            })
+        blog.author.email_user(subject=subject, message=message)
+    return 
+
+def send_notify_like_email(request, blog):
+    if blog.author.setting_notify_like:
+        subject = "New like on your blog"
+        message = render_to_string('notify_like_email.html', {
+            'blog': blog, 
+            'domain': get_current_site(request).domain, 
+            })
+        blog.author.email_user(subject=subject, message=message)
+    return 
+
+
+def send_notify_follow_email(request, follower, befollowed):
+    if befollowed.setting_notify_follow:
+        subject = "New follower on www.aphanti.com"
+        message = render_to_string('notify_follow_email.html', {
+            'follower': follower, 
+            'domain': get_current_site(request).domain, 
+            })
+        befollowed.email_user(subject=subject, message=message)
+    return 
 

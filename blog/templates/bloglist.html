@@ -24,12 +24,17 @@
     }
 
     .blog_title {
-        margin: 10px 0;
+        margin-top: 5px;
+        margin-bottom: 15px;
     }
 
     #blog-list-col {
         border-left: 4px solid gainsboro;
         padding-left: 20px;
+    }
+
+    .sort-link {
+        padding: 5px 10px;
     }
 
 </style>
@@ -73,14 +78,35 @@
     {% if num < 1 %}
         <h4>No blog found.</h4>
     {% else %}
-        Sorted by: Publish time | views | likes | comments
+        Sorted by: 
+        <ul class="nav nav-tabs" style="display: inline-flex;">
+            <li class="nav-item">
+                <a {% if sortby in 'publish_time' %}class="nav-link active sort-link"{% else %} class="nav-link sort-link" {% endif %} href="/blog/?sortby=publish_time">publish time</a> 
+            </li>
+            <li class="nav-item">
+                <a {% if sortby in 'views' %}class="nav-link active sort-link"{% else %} class="nav-link sort-link" {% endif %} href="/blog/?sortby=views">views</a> 
+            </li>
+            <li class="nav-item">
+                <a {% if sortby in 'likes' %}class="nav-link active sort-link"{% else %} class="nav-link sort-link" {% endif %} href="/blog/?sortby=likes">likes</a> 
+            </li>
+            <li class="nav-item">
+                <a {% if sortby in 'comments' %}class="nav-link active sort-link"{% else %} class="nav-link sort-link" {% endif %} href="/blog/?sortby=comments">comments</a>
+            </li> 
+        </ul>
+
+
         {% for blog in blogs %}
             <div class="container-fluid blog_list">
                 <h4 class="blog_title"><a href="/blog/{{blog.id}}" style="color:#268;">{{ blog.title }}</a></h4>
-                <p>By: 
+                <p style="margin-bottom: 5px;">By: 
                     <a href="/author/{{blog.author.id}}">{{ blog.author.display_name }}</a>  
                     <i class='fa fa-clock-o' style="margin-left: 10px;"></i> {{ blog.publish_time | date:'Y-m-d H:i' }}
                     <i class='fa fa-folder-open' style="margin-left: 10px;"></i> <a href="/blog/?category={{blog.category.name}}"> {{ blog.category.name }} </a>
+                </p>
+                <p style="margin-bottom: 0; color:#555;">
+                    <i class="fa fa-eye"></i> {{blog.num_visit}}, 
+                    <i class="fa fa-thumbs-o-up" style="margin-left: 5px;"></i> {{blog.num_like}}, 
+                    <i class="fa fa-commenting-o" style="margin-left: 5px;"></i> {{ blog.get_comment_count }}
                 </p>
             </div>
         {% endfor %}

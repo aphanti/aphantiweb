@@ -237,11 +237,6 @@ def mysetting_view(request):
             else:
                 request.user.setting_notify_follow = False
 
-            if 'notify_new_blog' in request.POST:
-                request.user.setting_notify_new_blog = True
-            else:
-                request.user.setting_notify_new_blog = False
-
             request.user.save()
 
         return render(request, 'mysetting.html', {'user': request.user})
