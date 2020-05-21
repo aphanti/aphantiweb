@@ -249,7 +249,35 @@ CKEDITOR_JQUERY_URL = 'https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery
 CKEDITOR_UPLOAD_PATH = '/'
 CKEDITOR_IMAGE_BACKEND = "pillow"
 
-CKEDITOR_CONFIGS = {
+CKEDITOR_CONFIGS = { 
+    'comment': {
+        'skin': 'moono', 
+        'toolbar_Custom': [ 
+            ['Format', 'Font', 'FontSize', '-', 'TextColor', 'BGColor'], 
+            ['Bold', 'Italic', 'Underline', '-', 'Subscript', 'Superscript'], 
+            ['NumberedList', 'BulletedList', '-', 'Blockquote', '-', 'CodeSnippet', 'Mathjax'], 
+        ], 
+        'toolbar': 'Custom', 
+        'height': 200, 
+        'width': "100%", 
+        'mathJaxLib': '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML',
+        'tabSpaces': 4,
+        'extraPlugins': ','.join([ 
+            'div', 
+            'autolink', 
+            'autoembed', 
+            'embedsemantic', 
+            'autogrow', 
+            'widget', 
+            'lineutils', 
+            'clipboard', 
+            'dialog', 
+            'dialogui', 
+            'elementspath', 
+            'codesnippet', 
+            'mathjax', 
+        ]), 
+    }, 
     'feedback': {
         'skin': 'moono', 
         'toolbar_Custom': [ 

@@ -72,7 +72,8 @@ class Category(models.Model):
 class Comment(models.Model):
     blog = models.ForeignKey('Blog', on_delete=models.CASCADE, null=True, related_name='comments')
     commenter = models.ForeignKey('accounts.WebUser', on_delete=models.CASCADE, null=False)
-    content = models.TextField(max_length=4000, blank=True)
+    #content = models.TextField(max_length=4000, blank=True)
+    content = RichTextField(config_name='comment')
     create_time = models.DateTimeField(auto_now_add=False)
 
     def __str__(self):

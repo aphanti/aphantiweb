@@ -11,8 +11,16 @@
 
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-AMS_HTML"></script>
 
+<script type="text/javascript" src="{% static "ckeditor/ckeditor-init.js" %}"></script>
+<script type="text/javascript" src="{% static "ckeditor/ckeditor/ckeditor.js" %}"></script>
+
 
 <style>
+
+    .django-ckeditor-widget { 
+        width: 100%; 
+    } 
+
     #summary {
         display: flex;
         align-items: center;
@@ -108,6 +116,7 @@
         font-family: Georgia, Times, "Times New Roman", serif;
         border-style: solid;
         border-color: #ccc;
+        color: #777;
         display: block;
         margin-block-start: 1em;
         margin-block-end: 1em;
@@ -242,7 +251,10 @@
         {% if user.is_authenticated %}
             <form action="{{request.path}}#blog_statistics" method="POST" style="width: 100%; padding: 10px 8%;">
                 {% csrf_token %}
-                <textarea class="form-control" name="comment" placeholder="Enter your comment here" required></textarea>
+                <!-- <textarea class="form-control" name="comment" placeholder="Enter your comment here" required></textarea> -->
+                <div id="comment_form" class="form-group" style="width:100%;">
+                    {% render_field comment_form.content class="form-control" %}
+                </div>
                 <button class="btn btn-primary float-right" type="submit" style="margin: 10px 0;" name="publish_comment">Publish Comment</button>
             </form>
         {% else %}
@@ -267,7 +279,7 @@
                     {{ comment.create_time | date:'Y-m-d H:i' }}: 
                 </p>
                 <p>
-                    {{ comment.content }}
+                    {{ comment.content | safe }}
                 </p>
             </div>
         </div>

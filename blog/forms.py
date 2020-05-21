@@ -12,3 +12,10 @@ class BlogForm(forms.ModelForm):
         fields = ('title', 'summary', 'category', 'tag', 'body')
 
 
+class CommentForm(forms.ModelForm):
+    content = forms.CharField(widget = CKEditorWidget(config_name='comment'), required=True)
+    class Meta:
+        model = Comment
+        fields = ('content', )
+
+

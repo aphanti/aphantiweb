@@ -6,7 +6,7 @@ import markdown
 from django.core.paginator import Paginator
 from django.http import HttpResponse
 from datetime import datetime, timedelta
-from .forms import BlogForm
+from .forms import BlogForm, CommentForm
 from tracking_analyzer.models import Tracker
 from django.utils import timezone
 from django.http import Http404  
@@ -121,13 +121,19 @@ def blogdetailview(request, pk):
 
         if request.method=='POST':
             if 'publish_comment' in request.POST:
-                comment = Comment(commenter=request.user, 
-                    content=request.POST['comment'], 
-                    blog=blog, 
-                    create_time = timezone.now() )
-                comment.save()
-                send_notify_comment_email(request, blog)
-
+                # comment = Comment(commenter=request.user, 
+                #     content=request.POST['comment'], 
+                #     blog=blog, 
+                #     create_time = timezone.now() )
+                # comment.save()
+                comment_form = CommentForm(request.POST)
+                if comment_form.is_valid():
+                    comment = comment_form.save(commit=False)
+                    comment.commenter = request.user 
+                    comment.create_time = timezone.now()
+                    comment.blog = blog
+                    comment = comment_form.save(commit=True)
+                    send_notify_comment_email(request, blog)
             
             if 'add_follow' in request.POST:
                 add_follow(request, request.user, blog.author)
@@ -156,7 +162,6 @@ def blogdetailview(request, pk):
                         blog.num_like -= 1
                         blog.save()
 
-
         if 'has_viewed' not in request.session:
             request.session['has_viewed'] = [blog.id]
             blog.num_visit += 1
@@ -175,8 +180,10 @@ def blogdetailview(request, pk):
             liked = False
 
         Tracker.objects.create_from_request(request, blog)
+        comment_form = CommentForm()
 
-        return render(request, 'blogdetail.html', {'blog': blog, 'comments':blog.comments.all().order_by('-create_time'), 'num_comment':len(blog.comments.all()), 'liked': liked})
+        return render(request, 'blogdetail.html', {'blog': blog, 'comments':blog.comments.all().order_by('-create_time'), 'num_comment':len(blog.comments.all()), 'liked': liked, 
+        'comment_form': comment_form})
     else:
         if not request.user.is_authenticated:
             return HttpResponseRedirect("/accounts/login/?next=/blog/"+format(pk))
