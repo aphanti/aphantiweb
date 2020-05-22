@@ -11,6 +11,7 @@
     - mysql-connector-python: https://dev.mysql.com/doc/connector-python/en/connector-python-installation-binary.html
     - MySQLdb: pip install mysqlclient
     - django==3.0.0
+    - python-memcached
     - six
     - markdown
     - Pillow
@@ -97,3 +98,6 @@
         + Secrect key: xxx
         + Key: [secret key]
         + Sites: choose the domain (e.g. 127.0.0.1:8000)
+
++ copy skin.js to staticfiles/ckeditor/ckeditor/skins/moono/skin.js
+
