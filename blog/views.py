@@ -55,6 +55,8 @@ def bloglistview(request):
         if 'search' in request.GET:
             search_text = request.GET['search']
             filtering = True
+        if ('page' not in request.GET) and ('sortby' not in request.GET) and ('blog_filter' in request.session):
+            request.session.pop('blog_filter')
     else:
         request.session['sortby'] = 'publish_time'
         filtering = True
