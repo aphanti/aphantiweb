@@ -257,6 +257,7 @@ CKEDITOR_CONFIGS = {
             ['Bold', 'Italic', 'Underline', '-', 'Subscript', 'Superscript'], 
             ['NumberedList', 'BulletedList', '-', 'Blockquote', '-', 'CodeSnippet', 'Mathjax'], 
         ], 
+        'scayt_autoStartup': True, 
         'toolbar': 'Custom', 
         'height': 200, 
         'width': "100%", 
@@ -276,6 +277,7 @@ CKEDITOR_CONFIGS = {
             'elementspath', 
             'codesnippet', 
             'mathjax', 
+            'scayt', 
         ]), 
     }, 
     'feedback': {
@@ -285,6 +287,7 @@ CKEDITOR_CONFIGS = {
             ['Bold', 'Italic', 'Underline', '-', 'Subscript', 'Superscript'], 
             ['NumberedList', 'BulletedList'], 
         ], 
+        'scayt_autoStartup': True, 
         'toolbar': 'Custom', 
         'height': 200, 
         'width': "100%", 
@@ -301,6 +304,7 @@ CKEDITOR_CONFIGS = {
             'dialog', 
             'dialogui', 
             'elementspath', 
+            'scayt', 
         ]), 
     }, 
     'default': {
@@ -358,8 +362,8 @@ CKEDITOR_CONFIGS = {
             #    ]},
             #{'name': 'about', 'items': ['About']},
             #'/',  # put this to force next toolbar on new line
-
-        ],
+        ], 
+        'scayt_autoStartup': True, 
         'toolbar': 'YourCustomToolbarConfig',  # put selected toolbar config here
         # 'toolbarGroups': [{ 'name': 'document', 'groups': [ 'mode', 'document', 'doctools' ] }],
         'height': 200,
@@ -386,6 +390,7 @@ CKEDITOR_CONFIGS = {
             'elementspath', 
             'codesnippet', 
             'mathjax', 
+            'scayt', 
         ]),
     }
 }
