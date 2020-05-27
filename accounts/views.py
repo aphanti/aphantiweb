@@ -16,7 +16,7 @@ from django.core.paginator import Paginator
 
 from blog.models import Blog, Comment, Follow
 
-post_per_page = 6
+post_per_page = 10
 comment_per_page = 10
 
 
