@@ -242,8 +242,11 @@ def update_blog_view(request, pk):
                         blog.update_time = timezone.now()
                         blog.is_draft = True
                     else:
-                        blog.publish_time = timezone.now()
-                        blog.is_draft = False
+                        if blog.is_draft:
+                            blog.publish_time = timezone.now()
+                            blog.is_draft = False
+                        else:
+                            blog.update_time = timezone.now()
                     blog.save()
 
                     all_tag = [t.name for t in Tag.objects.all()]
