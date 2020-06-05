@@ -10,9 +10,9 @@ urlpatterns = [
     path('create/', views.create_blog_view, name="create-blog"), 
     path('<int:pk>/', views.blogdetailview, name='blog-detail'), 
     path('<int:pk>/update/', views.update_blog_view, name="update-blog"), 
-    path('ckeditor/upload/', 
-        uploader_views.upload, name='ckeditor_upload'), 
-    path('ckeditor/browse/', 
-        never_cache(uploader_views.browse), name='ckeditor_browse'), 
+    #path('ckeditor/upload/', 
+    #    uploader_views.upload, name='ckeditor_upload'), 
+    #path('ckeditor/browse/', 
+    #    never_cache(uploader_views.browse), name='ckeditor_browse'), 
 ]
 
