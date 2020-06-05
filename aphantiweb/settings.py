@@ -246,9 +246,9 @@ LOGIN_REDIRECT_URL = '/'
 
 CKEDITOR_JQUERY_URL = 'https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js'
 
-#CKEDITOR_UPLOAD_PATH = '/'
 CKEDITOR_UPLOAD_PATH = "ckeditor/"
 CKEDITOR_IMAGE_BACKEND = "pillow"
+CKEDITOR_REQUIRE_STAFF = False
 
 CKEDITOR_CONFIGS = { 
     'comment': {
@@ -374,7 +374,7 @@ CKEDITOR_CONFIGS = {
         # 'toolbarCanCollapse': True,
         'mathJaxLib': '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML',
         'tabSpaces': 4, 
-        'filebrowserUploadMethod': 'form', 
+        #'filebrowserUploadMethod': 'form', 
         'extraPlugins': ','.join([
             'uploadimage', # the upload image feature
             # your extra plugins here

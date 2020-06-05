@@ -6,7 +6,7 @@ from .models import Blog, Comment, Tag, Category
 
 
 class BlogForm(forms.ModelForm):
-    body = forms.CharField(widget = CKEditorUploadingWidget(), required=True)
+    body = forms.CharField(widget = CKEditorUploadingWidget(config_name='default'), required=True)
     class Meta:
         model = Blog
         fields = ('title', 'summary', 'category', 'tag', 'body')

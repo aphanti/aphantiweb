@@ -18,6 +18,9 @@
     - whitenoise
     - django-allauth
     - django-ckeditor
+        + download the latest skin.js and put it in staticfiles/ckeditor/ckeditor/skins/moono/skin.js
+        + delete staff_member_required() in anaconda3/lib/python3.7/site-packages/ckeditor_uploader/urls.py
+            - or overwrite these two urls in aphantiweb/urls.py (before ckeditor's url)
     - django-widget-tweaks
     - django-social-share
     - geoip2: pip install geoip2
