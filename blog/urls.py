@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 from ckeditor_uploader import views as uploader_views
+from django.views.decorators.cache import never_cache
 
 app_name = 'blog'
 
@@ -12,6 +13,6 @@ urlpatterns = [
     path('ckeditor/upload/', 
         uploader_views.upload, name='ckeditor_upload'), 
     path('ckeditor/browse/', 
-        uploader_views.browse, name='ckeditor_browse'), 
+        never_cache(uploader_views.browse), name='ckeditor_browse'), 
 ]
 
