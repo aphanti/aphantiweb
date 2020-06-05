@@ -35,7 +35,7 @@ from django.conf.urls.static import static
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-urlpatterns += [ path('ckeditor/', include('ckeditor_uploader.urls'), 'ckeditor'), 
+urlpatterns += [ path('ckeditor/', include('ckeditor_uploader.urls'), name='ckeditor'), 
     path('ckeditor/upload/', uploader_views.upload, name='ckeditor_upload'), 
     path('ckeditor/browse/', never_cache(uploader_views.browse), name='ckeditor_browse'),  ]
 
