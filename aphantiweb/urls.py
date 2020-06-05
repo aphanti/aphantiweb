@@ -16,6 +16,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from ckeditor_uploader import views as uploader_views
+from django.views.decorators.cache import never_cache
+
+
 urlpatterns = [
     path('admin/', admin.site.urls), 
     #path('ckeditor/', include('ckeditor_uploader.urls')), 
@@ -31,7 +35,9 @@ from django.conf.urls.static import static
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-urlpatterns += [ path('ckeditor/', include('ckeditor_uploader.urls')) ]
+urlpatterns += [ path('ckeditor/', include('ckeditor_uploader.urls'), 'ckeditor'), 
+    path('ckeditor/upload/', uploader_views.upload, name='ckeditor_upload'), 
+    path('ckeditor/browse/', never_cache(uploader_views.browse), name='ckeditor_browse'),  ]
 
 #Add Django site authentication urls (for login, logout, password management)
 urlpatterns += [ 
