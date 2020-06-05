@@ -372,7 +372,8 @@ CKEDITOR_CONFIGS = {
         # 'filebrowserWindowWidth': 940,
         # 'toolbarCanCollapse': True,
         'mathJaxLib': '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML',
-        'tabSpaces': 4,
+        'tabSpaces': 4, 
+        'filebrowserUploadMethod': 'form', 
         'extraPlugins': ','.join([
             'uploadimage', # the upload image feature
             # your extra plugins here
