@@ -104,3 +104,4 @@
 
 + copy skin.js to staticfiles/ckeditor/ckeditor/skins/moono/skin.js
 
++ On some machines, if the mysql doesn't support foreign languages, you will get 500 error when you create/update a blog with non-English words. In this case, run *test/support_unicode.py* to convert all the table to support unicode.

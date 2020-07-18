@@ -147,7 +147,8 @@ DATABASES = {
         'USER': web_info['APHANTI_MYSQL_USER'],
         'PASSWORD': web_info['APHANTI_MYSQL_PASSWORD'],
         'HOST': 'localhost',
-        'PORT': 3306,
+        'PORT': 3306, 
+        'OPTIONS': {'charset': 'utf8mb4'}, 
     }
 }
 
