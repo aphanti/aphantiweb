@@ -27,7 +27,7 @@
         + download geoip data files from: https://dev.maxmind.com/geoip/geoip2/geolite2/
     - django-tracking-analyzer: pip install django-tracking-analyzer
         + change anaconda3/lib/python3.7/site-packages/tracking_analyzer/bak_admin.py: line 200-208 to:
-            - ```python
+            ```python
             current_results = []
             objs = Tracker.objects.filter(pk__in=list(current_pks))
             for i in range(len(objs)):
