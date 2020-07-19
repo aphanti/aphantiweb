@@ -14,6 +14,8 @@ from django.http import HttpResponseRedirect
 from django.template.loader import render_to_string
 from django.contrib.sites.shortcuts import get_current_site
 import random 
+import os
+import json 
 
 
 blog_per_page = 10
@@ -235,7 +237,23 @@ def update_blog_view(request, pk):
     if request.user.is_authenticated:
         instance = get_object_or_404(Blog, id=int(pk))
 
-        if request.user.id == instance.author.id:
+        update_flag = False
+        if request.user.id == instance.author.id: 
+            update_flag = True
+
+        #-----------------------------------------------------
+        # special access to certain blogs by certain users
+        if not update_flag:
+            update_blog_permission = dict()
+            fjson = '/opt/aphanti/blog_update_permission.json'
+            if os.path.exists(fjson):
+                update_blog_permission = json.load(open(fjson, 'r'))
+            if str(instance.id) in update_blog_permission:
+                if request.user.id in update_blog_permission[str(instance.id)]:
+                    update_flag = True
+        #-----------------------------------------------------
+
+        if update_flag:
             if request.method == "POST":
                 form = BlogForm(request.POST, instance=instance)
                 if form.is_valid():
@@ -269,7 +287,7 @@ def update_blog_view(request, pk):
 
             return render(request, "update_blog.html", {"form": BlogForm(instance=instance), 'is_draft':instance.is_draft})
         else:
-            return redirect('blog-detail', pk=pk)
+            return redirect('/blog/'+format(pk))
     else:
         return redirect('login')
 
