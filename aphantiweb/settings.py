@@ -33,12 +33,20 @@ if web_info['APHANTI_ENV'] == 'dev':
     DEBUG = True
 else:
     DEBUG = False 
-    CSRF_COOKIE_SECURE = True
-    SESSION_COOKIE_SECURE = True
-    SECURE_CONTENT_TYPE_NOSNIFF = True
-    SECURE_BROWSER_XSS_FILTER = True
-    SECURE_SSL_REDIRECT = True
-    X_FRAME_OPTIONS = 'DENY'    
+    if web_info.get('https', False):
+        SECURE_SSL_REDIRECT = True
+        CSRF_COOKIE_SECURE = True
+        SESSION_COOKIE_SECURE = True
+        SECURE_CONTENT_TYPE_NOSNIFF = True
+        SECURE_BROWSER_XSS_FILTER = True
+        X_FRAME_OPTIONS = 'DENY'    
+    else:
+        SECURE_SSL_REDIRECT = False
+        CSRF_COOKIE_SECURE = False
+        SESSION_COOKIE_SECURE = False
+        SECURE_CONTENT_TYPE_NOSNIFF = False
+        SECURE_BROWSER_XSS_FILTER = False
+
 
 
 ALLOWED_HOSTS = ['*', '142.93.196.25', 'localhost', '127.0.0.1', 'aphanti.com', 'www.aphanti.com']

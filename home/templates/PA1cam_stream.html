@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="-1">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.bundle.min.js"></script>
+
+    <style>
+        .mycam {
+            width: 100%;
+            height: auto;
+            -webkit-transform: rotate(180deg);
+            -moz-transform: rotate(180deg);
+            -o-transform: rotate(180deg);
+            -ms-transform: rotate(180deg);
+            transform: rotate(180deg);
+        }
+        .brightimg {
+            filter: brightness(100%);
+        }
+        
+        .col-sm-12 {
+            margin: 0px;
+            padding: 0px;
+        }
+        
+        .col-sm-6 {
+            margin: 0px;
+            padding: 5px;
+        }
+
+        .timestamp {
+            color: red;
+            position: relative;
+            top: -35px;
+            left: 10px;
+        }
+        
+    </style>
+
+
+    </head>
+    <body>
+
+
+        <img id="loading" src="https://i.gifer.com/origin/b4/b4d657e7ef262b88eb5f7ac021edda87.gif" />
+        
+        <div class="row col-sm-12">
+            <div class="col-sm-6">
+                <img class="mycam" src="" /> 
+                <h4 class="timestamp" ></h4>
+            </div>
+            <div class="col-sm-6">
+                <img class="mycam"  src="" />            
+                <h4 class="timestamp" ></h4>
+            </div>
+        </div> 
+        
+        <div class="row col-sm-12">
+            <div class="col-sm-6">
+                <img class="mycam" src="" /> 
+                <h4 class="timestamp" ></h4>
+            </div>
+            <div class="col-sm-6">
+                <img class="mycam"  src="" />            
+                <h4 class="timestamp" ></h4>
+            </div>
+        </div> 
+
+
+        <script>
+            let ports = [7111, 7112, 7113, 7114];
+            let labels = ['p7111', 'p7112', 'p7113', 'p7114']; 
+            var ws = [];
+            let obj;
+            const reader = new FileReader();
+            const imgs = document.querySelectorAll('.mycam');
+            const tss = document.querySelectorAll('.timestamp');
+            
+
+                 
+                    var server_ip = '142.93.196.25';
+                    console.log(server_ip);
+                    for(i=0; i<ports.length; i++) {
+                        ws.push( new WebSocket("ws://"+server_ip+":"+ports[i]));
+                    }
+                    for(i=0; i<ports.length; i++) {
+                        ws_connect(i);
+                    }
+
+                    function localtime() {
+
+                        date = new Date();
+                        var localOffset = date.getTimezoneOffset() * 60000;
+                        var localTime = date.getTime();
+                        return new Date(localTime - localOffset);
+
+                    };
+
+
+
+                    function ws_connect(i) {
+                        ws[i].onopen = function(e) {
+                            console.log('ws', i, 'connected!');
+                        };
+
+                        ws[i].onmessage = function(event) {
+                            // var dt = new Date();
+                            // console.log(dt.getTime(), 'ws', i, 'received binary data');
+                            // imgs[i].src = URL.createObjectURL(new Blob([event.data]));
+                            
+                            if (obj) {
+                                URL.revokeObjectURL(obj);
+                            } 
+                            obj = URL.createObjectURL(new Blob([event.data]));
+                            imgs[i].src = obj;
+                            //imgs[i].style.filter = "brightness(80%)";
+                            tss[i].innerText = labels[i]+ ' - ' + localtime().toISOString().slice(0, 19);
+
+                             document.getElementById("loading").style.display = "none"; 
+                        };
+
+                        ws[i].onclose = function(event) {
+                          if (event.wasClean) {
+                            console.log(i, '[close] Connection closed cleanly, code=${event.code} reason=${event.reason}');
+                          } else {
+                            // e.g. server process killed or network down
+                            // event.code is usually 1006 in this case
+                            console.log(i, '[close] Connection died');
+                          }
+                        };
+
+                        ws[i].onerror = function(error) {
+                          console.log(i, `[error] ${error.message}`);
+                        };
+                    }
+                               
+
+
+        </script>
+    </body>
+</html>
