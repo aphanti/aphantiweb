@@ -1,0 +1,16 @@
+{
+    "domain_name": "www.aphanti.com",
+    "APHANTI_ENV": "prod",
+    "APHANTI_SECRET_KEY": "",
+    "APHANTI_MYSQL_DBNAME": "",
+    "APHANTI_MYSQL_USER": "",
+    "APHANTI_MYSQL_PASSWORD": "",
+    "EMAIL_HOST_USER": "",
+    "EMAIL_HOST_PASSWORD": "",
+    "GEOIP_PATH": "",
+    "google_app_client_id": "",
+    "google_app_client_secret": "",
+    "esp32cam_password_MA": "",
+    "esp32cam_password_PA1": "",
+    "esp32cam_settings_json": ""
+}
